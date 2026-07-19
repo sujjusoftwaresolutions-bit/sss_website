@@ -37,15 +37,15 @@ const Services = () => {
   }, []);
 
   return (
-    <div className="w-full bg-brand-bg relative overflow-hidden">
+    <div className="w-full bg-[#050B14] relative overflow-hidden">
       <SEO 
         title="Our Services" 
         description="Explore the premium software development, AI solutions, and technical training services offered by SUJJU Software Solutions." 
       />
 
       {/* Hero Section */}
-      <section className="relative pt-32 pb-24 bg-brand-navy text-center text-white overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-brand-navy via-[#0f3d82] to-brand-navy" />
+      <section className="relative pt-32 pb-24 bg-[#050B14] text-center text-white overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-[#081225] via-[#050B14] to-[#081225]" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-brand-gold/10 via-transparent to-transparent opacity-50" />
         
         <div className="relative z-10 max-w-4xl mx-auto px-6">
@@ -120,19 +120,19 @@ const Services = () => {
                 </div>
 
                 <div className="w-full lg:w-1/2">
-                  <div className="w-16 h-16 bg-white rounded-xl shadow-lg flex items-center justify-center mb-6">
+                  <div className="w-16 h-16 bg-[#050B14] border border-white/5 rounded-xl shadow-lg flex items-center justify-center mb-6">
                     {service.icon}
                   </div>
-                  <h2 className="text-3xl font-bold text-brand-navy mb-4 font-outfit">{service.title}</h2>
-                  <p className="text-gray-600 font-inter text-lg leading-relaxed mb-6">
+                  <h2 className="text-3xl font-bold text-heading mb-4 font-outfit">{service.title}</h2>
+                  <p className="text-body font-inter text-lg leading-relaxed mb-6">
                     {service.description}
                   </p>
                   
                   <div className="mb-8">
-                    <h4 className="font-bold text-brand-navy mb-3 font-outfit">Technologies Used:</h4>
+                    <h4 className="font-bold text-heading mb-3 font-outfit">Technologies Used:</h4>
                     <div className="flex flex-wrap gap-2">
                       {service.technologies.map((tech, i) => (
-                        <span key={i} className="px-3 py-1 bg-brand-bg border border-brand-gold/30 text-brand-navy text-sm font-bold rounded-full font-inter">
+                        <span key={i} className="px-3 py-1 bg-[#081225] border border-white/10 text-body text-sm font-bold rounded-full font-inter">
                           {tech}
                         </span>
                       ))}
@@ -140,7 +140,7 @@ const Services = () => {
                   </div>
 
                   <Link to="/contact">
-                    <button className="flex items-center gap-2 text-brand-gold font-bold font-inter hover:text-brand-navy transition-colors group">
+                    <button className="flex items-center gap-2 text-brand-gold font-bold font-inter hover:text-white transition-colors group">
                       Discuss Your Project <ChevronRight className="group-hover:translate-x-1 transition-transform" />
                     </button>
                   </Link>
@@ -152,7 +152,7 @@ const Services = () => {
       </section>
 
       {/* Technology Showcase */}
-      <section className="py-24 bg-brand-navy text-white text-center relative overflow-hidden">
+      <section className="py-24 bg-[#081225] border-t border-white/5 text-white text-center relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-6 relative z-10">
           <h2 className="text-4xl font-bold mb-4 font-outfit">Technologies We Master</h2>
           <div className="w-20 h-1 bg-brand-gold mx-auto rounded-full mb-16" />

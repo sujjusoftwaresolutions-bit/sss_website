@@ -21,16 +21,16 @@ const whyUs = [
 
 const About = () => {
   return (
-    <div className="w-full bg-brand-bg relative overflow-hidden">
+    <div className="w-full bg-[#050B14] relative overflow-hidden">
       <SEO 
         title="About Us" 
         description="Learn about SUJJU Software Solutions, our mission, vision, and core values. We bridge the gap between academia and industry." 
       />
 
       {/* Hero Section */}
-      <section className="relative pt-32 pb-24 bg-brand-navy text-center text-white overflow-hidden">
+      <section className="relative pt-32 pb-24 bg-[#050B14] text-center text-white overflow-hidden">
         <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1920&q=80')] bg-cover bg-center opacity-10 mix-blend-luminosity" />
-        <div className="absolute inset-0 bg-gradient-to-t from-brand-navy via-transparent to-brand-navy" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#050B14] via-transparent to-[#050B14]" />
         
         <div className="relative z-10 max-w-4xl mx-auto px-6">
           <motion.div 
@@ -86,12 +86,12 @@ const About = () => {
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="p-12 rounded-3xl bg-white shadow-xl relative overflow-hidden group"
+            className="p-12 rounded-3xl bg-[#081225] border border-white/5 shadow-xl relative overflow-hidden group"
           >
-            <div className="absolute top-0 left-0 w-2 h-full bg-brand-navy" />
-            <div className="absolute top-0 right-0 w-32 h-32 bg-brand-navy/5 rounded-bl-full -z-10 group-hover:scale-150 transition-transform duration-700" />
-            <h2 className="text-3xl font-bold text-brand-navy mb-6 font-outfit">Our Mission</h2>
-            <p className="text-[16px] md:text-[17px] lg:text-[18px] text-slate-800 font-medium leading-[1.8] italic">
+            <div className="absolute top-0 left-0 w-2 h-full bg-brand-gold/30" />
+            <div className="absolute top-0 right-0 w-32 h-32 bg-brand-gold/5 rounded-bl-full -z-10 group-hover:scale-150 transition-transform duration-700" />
+            <h2 className="text-3xl font-bold text-heading mb-6 font-outfit">Our Mission</h2>
+            <p className="text-[16px] md:text-[17px] lg:text-[18px] text-body font-medium leading-[1.8] italic">
               "Deliver innovative software solutions while empowering students and organizations through practical technology education."
             </p>
           </motion.div>
@@ -100,12 +100,12 @@ const About = () => {
             initial={{ opacity: 0, x: 50 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="p-12 rounded-3xl bg-white shadow-xl relative overflow-hidden group"
+            className="p-12 rounded-3xl bg-[#081225] border border-white/5 shadow-xl relative overflow-hidden group"
           >
             <div className="absolute top-0 right-0 w-2 h-full bg-brand-gold" />
             <div className="absolute bottom-0 left-0 w-32 h-32 bg-brand-gold/10 rounded-tr-full -z-10 group-hover:scale-150 transition-transform duration-700" />
             <h2 className="text-3xl font-bold text-brand-gold mb-6 font-outfit">Our Vision</h2>
-            <p className="text-[16px] md:text-[17px] lg:text-[18px] text-slate-800 font-medium leading-[1.8] italic">
+            <p className="text-[16px] md:text-[17px] lg:text-[18px] text-body font-medium leading-[1.8] italic">
               "Become a trusted software and AI company that bridges academia and industry through innovation, quality, and continuous learning."
             </p>
           </motion.div>
@@ -113,10 +113,10 @@ const About = () => {
       </section>
 
       {/* Core Values */}
-      <section className="py-24 bg-white relative">
+      <section className="py-24 bg-[#050B14] relative">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-brand-navy mb-4 font-outfit">Core Values</h2>
+            <h2 className="text-4xl font-bold text-heading mb-4 font-outfit">Core Values</h2>
             <div className="w-20 h-1 bg-brand-gold mx-auto rounded-full" />
           </div>
 
@@ -128,13 +128,13 @@ const About = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.1 }}
-                className="p-8 rounded-2xl bg-brand-bg hover:bg-brand-navy group transition-colors duration-300 text-center"
+                className="p-8 rounded-2xl bg-[#081225] border border-white/5 hover:border-brand-gold/30 hover:bg-[#050B14] group transition-colors duration-300 text-center"
               >
-                <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center text-brand-navy mx-auto mb-6 shadow-md group-hover:text-brand-gold transition-colors">
+                <div className="w-16 h-16 bg-[#050B14] rounded-full flex items-center justify-center text-white border border-white/10 mx-auto mb-6 shadow-md group-hover:text-brand-gold transition-colors">
                   {value.icon}
                 </div>
-                <h3 className="text-xl font-bold text-brand-navy mb-3 font-outfit group-hover:text-white transition-colors">{value.title}</h3>
-                <p className="text-[16px] md:text-[17px] lg:text-[18px] text-slate-800 font-medium leading-[1.8] group-hover:text-gray-100 transition-colors">{value.desc}</p>
+                <h3 className="text-xl font-bold text-heading mb-3 font-outfit transition-colors">{value.title}</h3>
+                <p className="text-[16px] md:text-[17px] lg:text-[18px] text-body font-medium leading-[1.8] transition-colors">{value.desc}</p>
               </motion.div>
             ))}
           </div>
@@ -142,10 +142,10 @@ const About = () => {
       </section>
 
       {/* Why Clients Choose Us */}
-      <section className="py-24 bg-brand-bg">
+      <section className="py-24 bg-[#050B14]">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-brand-navy mb-4 font-outfit">Why Clients Choose Us</h2>
+            <h2 className="text-4xl font-bold text-heading mb-4 font-outfit">Why Clients Choose Us</h2>
             <div className="w-20 h-1 bg-brand-gold mx-auto rounded-full" />
           </div>
 
@@ -157,13 +157,13 @@ const About = () => {
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.1 }}
-                className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100 hover:border-brand-gold/30 hover:shadow-brand-gold/10 transition-all duration-300"
+                className="bg-[#081225] p-8 rounded-2xl shadow-lg border border-white/5 hover:border-brand-gold/30 transition-all duration-300"
               >
                 <div className="text-brand-gold mb-6">
                   {item.icon}
                 </div>
-                <h3 className="text-lg font-bold text-brand-navy mb-2 font-outfit">{item.title}</h3>
-                <p className="text-[16px] md:text-[17px] lg:text-[18px] text-slate-800 font-medium leading-[1.8]">{item.desc}</p>
+                <h3 className="text-lg font-bold text-heading mb-2 font-outfit">{item.title}</h3>
+                <p className="text-[16px] md:text-[17px] lg:text-[18px] text-body font-medium leading-[1.8]">{item.desc}</p>
               </motion.div>
             ))}
           </div>

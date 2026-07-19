@@ -47,7 +47,7 @@ const Contact = () => {
         <motion.h1 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-5xl md:text-6xl font-bold text-brand-navy mb-6 font-outfit tracking-tight"
+          className="text-5xl md:text-6xl font-bold text-heading mb-6 font-outfit tracking-tight"
         >
           Let's Work <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-gold to-brand-light-gold">Together</span>
         </motion.h1>
@@ -93,49 +93,49 @@ const Contact = () => {
                   style={{ filter: 'drop-shadow(0 4px 15px rgba(0,0,0,0.1))' }}
                 />
               </motion.div>
-              <h3 className="text-2xl font-bold text-brand-navy font-outfit">Chandrasekhar Uppu</h3>
+              <h3 className="text-2xl font-bold text-heading font-outfit">Chandrasekhar Uppu</h3>
               <p className="text-brand-gold font-bold text-sm mb-6 uppercase tracking-wider">Founder, SUJJU Software Solutions</p>
               
               <div className="space-y-6">
                 <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 bg-brand-bg rounded-lg flex items-center justify-center text-brand-navy shrink-0">
+                  <div className="w-10 h-10 bg-[#050B14] rounded-lg flex items-center justify-center text-white shrink-0">
                     <MapPin size={20} />
                   </div>
                   <div>
-                    <h4 className="font-bold text-brand-navy font-inter text-sm mb-1">Office Address</h4>
-                    <p className="text-sm text-gray-600 leading-relaxed font-inter">
+                    <h4 className="font-bold text-heading font-inter text-sm mb-1">Office Address</h4>
+                    <p className="text-sm text-muted leading-relaxed font-inter">
                       2nd Floor, Mahalakshmi Complex-2,<br/>Near Apsara Theatre, Vijayawada,<br/>Andhra Pradesh
                     </p>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 bg-brand-bg rounded-lg flex items-center justify-center text-brand-navy shrink-0">
+                  <div className="w-10 h-10 bg-[#050B14] rounded-lg flex items-center justify-center text-white shrink-0">
                     <Phone size={20} />
                   </div>
                   <div>
-                    <h4 className="font-bold text-brand-navy font-inter text-sm mb-1">Phone</h4>
-                    <p className="text-sm text-gray-600 font-inter">+91 9440420820</p>
+                    <h4 className="font-bold text-heading font-inter text-sm mb-1">Phone</h4>
+                    <p className="text-sm text-muted font-inter">+91 9440420820</p>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 bg-brand-bg rounded-lg flex items-center justify-center text-brand-navy shrink-0">
+                  <div className="w-10 h-10 bg-[#050B14] rounded-lg flex items-center justify-center text-white shrink-0">
                     <Mail size={20} />
                   </div>
                   <div>
-                    <h4 className="font-bold text-brand-navy font-inter text-sm mb-1">Email</h4>
-                    <p className="text-sm text-gray-600 font-inter">info@sujjusoftware.com</p>
+                    <h4 className="font-bold text-heading font-inter text-sm mb-1">Email</h4>
+                    <p className="text-sm text-muted font-inter">info@sujjusoftware.com</p>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 bg-brand-bg rounded-lg flex items-center justify-center text-brand-navy shrink-0">
+                  <div className="w-10 h-10 bg-[#050B14] rounded-lg flex items-center justify-center text-white shrink-0">
                     <Clock size={20} />
                   </div>
                   <div>
-                    <h4 className="font-bold text-brand-navy font-inter text-sm mb-1">Business Hours</h4>
-                    <p className="text-sm text-gray-600 font-inter">Mon - Sat: 9:00 AM - 6:00 PM</p>
+                    <h4 className="font-bold text-heading font-inter text-sm mb-1">Business Hours</h4>
+                    <p className="text-sm text-muted font-inter">Mon - Sat: 9:00 AM - 6:00 PM</p>
                   </div>
                 </div>
               </div>
@@ -158,18 +158,18 @@ const Contact = () => {
             transition={{ delay: 0.4 }}
             className="lg:w-2/3"
           >
-            <div className="glass p-8 md:p-12 rounded-2xl bg-white shadow-xl h-full">
-              <h3 className="text-3xl font-bold text-brand-navy mb-8 font-outfit">Send us a Message</h3>
+            <div className="glass-dark bg-[#081225] border-white/5 p-8 md:p-12 rounded-2xl shadow-xl h-full">
+              <h3 className="text-3xl font-bold text-heading mb-8 font-outfit">Send us a Message</h3>
               
               <AnimatePresence mode="wait">
                 {status === 'success' && (
-                  <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="mb-6 p-4 bg-green-50 text-green-700 rounded-lg flex items-center gap-3 border border-green-200">
+                  <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="mb-6 p-4 bg-green-500/10 text-green-400 rounded-lg flex items-center gap-3 border border-green-500/20">
                     <CheckCircle className="shrink-0" />
                     <p className="font-inter font-medium">Your message has been sent successfully. We will get back to you soon!</p>
                   </motion.div>
                 )}
                 {status === 'error' && (
-                  <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="mb-6 p-4 bg-red-50 text-red-700 rounded-lg flex items-center gap-3 border border-red-200">
+                  <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="mb-6 p-4 bg-red-500/10 text-red-400 rounded-lg flex items-center gap-3 border border-red-500/20">
                     <AlertCircle className="shrink-0" />
                     <p className="font-inter font-medium">{errorMessage}</p>
                   </motion.div>
@@ -179,29 +179,29 @@ const Contact = () => {
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2 font-inter">Full Name *</label>
-                    <input type="text" name="name" value={formData.name} onChange={handleChange} required className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-brand-gold focus:ring-2 focus:ring-brand-gold/20 outline-none transition-all bg-gray-50 font-inter" placeholder="John Doe" />
+                    <label className="block text-sm font-bold text-body mb-2 font-inter">Full Name *</label>
+                    <input type="text" name="name" value={formData.name} onChange={handleChange} required className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-brand-gold focus:ring-2 focus:ring-brand-gold/20 outline-none transition-all bg-white text-on-light font-inter" placeholder="John Doe" />
                   </div>
                   <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2 font-inter">Email Address *</label>
-                    <input type="email" name="email" value={formData.email} onChange={handleChange} required className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-brand-gold focus:ring-2 focus:ring-brand-gold/20 outline-none transition-all bg-gray-50 font-inter" placeholder="john@example.com" />
+                    <label className="block text-sm font-bold text-body mb-2 font-inter">Email Address *</label>
+                    <input type="email" name="email" value={formData.email} onChange={handleChange} required className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-brand-gold focus:ring-2 focus:ring-brand-gold/20 outline-none transition-all bg-white text-on-light font-inter" placeholder="john@example.com" />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2 font-inter">Phone Number</label>
-                    <input type="tel" name="phone" value={formData.phone} onChange={handleChange} className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-brand-gold focus:ring-2 focus:ring-brand-gold/20 outline-none transition-all bg-gray-50 font-inter" placeholder="+91 XXXXX XXXXX" />
+                    <label className="block text-sm font-bold text-body mb-2 font-inter">Phone Number</label>
+                    <input type="tel" name="phone" value={formData.phone} onChange={handleChange} className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-brand-gold focus:ring-2 focus:ring-brand-gold/20 outline-none transition-all bg-white text-on-light font-inter" placeholder="+91 XXXXX XXXXX" />
                   </div>
                   <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2 font-inter">Subject *</label>
-                    <input type="text" name="subject" value={formData.subject} onChange={handleChange} required className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-brand-gold focus:ring-2 focus:ring-brand-gold/20 outline-none transition-all bg-gray-50 font-inter" placeholder="How can we help you?" />
+                    <label className="block text-sm font-bold text-body mb-2 font-inter">Subject *</label>
+                    <input type="text" name="subject" value={formData.subject} onChange={handleChange} required className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-brand-gold focus:ring-2 focus:ring-brand-gold/20 outline-none transition-all bg-white text-on-light font-inter" placeholder="How can we help you?" />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-2 font-inter">Your Message *</label>
-                  <textarea name="message" value={formData.message} onChange={handleChange} required rows="5" className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-brand-gold focus:ring-2 focus:ring-brand-gold/20 outline-none transition-all bg-gray-50 font-inter resize-none" placeholder="Tell us about your project..."></textarea>
+                  <label className="block text-sm font-bold text-body mb-2 font-inter">Your Message *</label>
+                  <textarea name="message" value={formData.message} onChange={handleChange} required rows="5" className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-brand-gold focus:ring-2 focus:ring-brand-gold/20 outline-none transition-all bg-white text-on-light font-inter resize-none" placeholder="Tell us about your project..."></textarea>
                 </div>
 
                 <button 

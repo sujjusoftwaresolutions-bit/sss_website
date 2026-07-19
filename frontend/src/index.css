@@ -9,6 +9,11 @@
   --color-brand-bg: #050B14;
   --color-brand-text: #F8FAFC;
 
+  --color-heading: #F5F7FA;
+  --color-body: #CBD5E1;
+  --color-muted: #94A3B8;
+  --color-on-light: #050B14;
+
   --font-inter: 'Inter', sans-serif;
   --font-outfit: 'Outfit', sans-serif;
 }
