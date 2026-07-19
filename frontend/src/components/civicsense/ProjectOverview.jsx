@@ -33,7 +33,7 @@ const ProjectOverview = () => {
         >
           <h2 className="text-4xl font-bold text-heading mb-6 font-outfit">Abstract</h2>
           <div className="w-20 h-1 bg-brand-gold mx-auto rounded-full mb-8" />
-          <p className="text-xl text-gray-700 max-w-4xl mx-auto font-inter leading-relaxed">
+          <p className="text-xl text-gray-200 max-w-4xl mx-auto font-inter leading-relaxed">
             CivicSense AI is an intelligent web and mobile platform that empowers citizens and authorities to collaboratively detect, report, and resolve civic issues such as potholes, garbage overflow, and streetlight failures through AI-powered automation.
           </p>
         </motion.div>
@@ -49,7 +49,7 @@ const ProjectOverview = () => {
             <h3 className="text-3xl font-bold text-heading mb-4 font-outfit flex items-center gap-3">
               <AlertCircle className="text-red-500" /> The Problem
             </h3>
-            <p className="text-gray-600 font-inter">Traditional complaint systems are failing our modern cities due to:</p>
+            <p className="text-body font-inter">Traditional complaint systems are failing our modern cities due to:</p>
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
