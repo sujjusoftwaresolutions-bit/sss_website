@@ -33,12 +33,12 @@ const Navbar = () => {
       transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
       className={`fixed w-full top-0 z-50 transition-all duration-500 ${
         isScrolled
-          ? 'bg-white/85 backdrop-blur-xl shadow-[0_4px_30px_rgba(0,0,0,0.08)] border-b border-gray-200/50'
+          ? 'bg-[#050B14]/80 backdrop-blur-xl shadow-[0_4px_30px_rgba(0,0,0,0.5)] border-b border-white/5'
           : 'bg-transparent'
       }`}
-      style={{ height: isScrolled ? 'clamp(72px, 8vw, 80px)' : 'clamp(72px, 8vw, 90px)' }}
+      style={{ height: isScrolled ? '60px' : '80px' }}
     >
-      <div className="w-full max-w-[1440px] mx-auto px-6 md:px-8 lg:px-10 h-full flex justify-between items-center">
+      <div className="w-full max-w-[1440px] mx-auto px-4 md:px-6 h-full flex justify-between items-center">
 
         {/* ─── Logo ───────────────────────────────────────── */}
         <Link to="/" className="flex items-center gap-3 shrink-0 group">
@@ -49,30 +49,26 @@ const Navbar = () => {
             animate={{ opacity: 1, scale: 1, y: [0, -3, 0] }}
             whileHover={{ scale: 1.05 }}
             transition={{ opacity: { duration: 0.5 }, scale: { duration: 0.3 }, y: { duration: 3, repeat: Infinity, ease: 'easeInOut' } }}
-            className="rounded-xl shadow-lg transition-all duration-300"
+            className="rounded-lg shadow-lg transition-all duration-300"
             style={{
-              height: 'clamp(50px, 6vw, 75px)',
+              height: isScrolled ? 'clamp(32px, 4vw, 38px)' : 'clamp(36px, 4vw, 48px)',
               width: 'auto',
               objectFit: 'contain',
               filter: isScrolled
-                ? 'drop-shadow(0 2px 8px rgba(0,0,0,0.1))'
-                : 'drop-shadow(0 0 12px rgba(212,175,55,0.6))',
+                ? 'drop-shadow(0 2px 4px rgba(0,0,0,0.5))'
+                : 'drop-shadow(0 0 12px rgba(212,175,55,0.4))',
             }}
           />
           <div className="flex flex-col leading-tight">
             <span
-              className={`font-outfit font-extrabold tracking-tight transition-colors duration-300 ${
-                isScrolled ? 'text-brand-navy' : 'text-white'
-              }`}
-              style={{ fontSize: 'clamp(20px, 2.5vw, 28px)', fontWeight: 800, letterSpacing: '0.5px' }}
+              className={`font-outfit font-extrabold tracking-tight transition-colors duration-300 text-white`}
+              style={{ fontSize: 'clamp(18px, 2.5vw, 24px)', fontWeight: 800, letterSpacing: '0.5px' }}
             >
               SUJJU Software
             </span>
             <span
-              className={`font-inter font-semibold transition-colors duration-300 ${
-                isScrolled ? 'text-brand-gold' : 'text-brand-gold/80'
-              }`}
-              style={{ fontSize: 'clamp(10px, 1.2vw, 14px)', letterSpacing: '0.18em', textTransform: 'uppercase' }}
+              className={`font-inter font-semibold transition-colors duration-300 text-brand-gold`}
+              style={{ fontSize: 'clamp(9px, 1.2vw, 12px)', letterSpacing: '0.18em', textTransform: 'uppercase' }}
             >
               Solutions
             </span>
@@ -88,13 +84,11 @@ const Navbar = () => {
                 key={link.name}
                 to={link.path}
                 className={`relative font-outfit transition-colors duration-300 group ${
-                  isScrolled
-                    ? isActive ? 'text-brand-navy' : 'text-gray-600 hover:text-brand-navy'
-                    : isActive ? 'text-white' : 'text-gray-300 hover:text-white'
+                  isActive ? 'text-white' : 'text-gray-300 hover:text-white'
                 }`}
                 style={{
-                  fontSize: 19,
-                  fontWeight: 700,
+                  fontSize: 17,
+                  fontWeight: 600,
                   letterSpacing: '0.5px',
                   lineHeight: 1.5,
                 }}
@@ -121,76 +115,95 @@ const Navbar = () => {
             <motion.button
               whileHover={{ scale: 1.05, boxShadow: '0 0 30px rgba(212,175,55,0.5)' }}
               whileTap={{ scale: 0.95 }}
-              className={`relative px-8 py-3.5 rounded-full font-outfit font-bold overflow-hidden group transition-all duration-300 ${
-                isScrolled ? 'text-white' : 'text-brand-navy'
-              }`}
+              className={`relative px-6 py-2.5 rounded-full font-outfit font-bold overflow-hidden group transition-all duration-300 text-brand-navy`}
               style={{
-                fontSize: 17,
-                background: isScrolled
-                  ? 'linear-gradient(135deg, #0A2F6B 0%, #1a4a9e 100%)'
-                  : 'linear-gradient(135deg, #F4C542 0%, #D4AF37 100%)',
+                fontSize: 15,
+                background: 'linear-gradient(135deg, #F4C542 0%, #D4AF37 100%)',
                 boxShadow: '0 4px 20px rgba(212,175,55,0.3)',
               }}
             >
               <span className="relative z-10">Get in Touch</span>
-              <div className="absolute inset-0 bg-brand-gold/30 scale-x-0 origin-left group-hover:scale-x-100 transition-transform duration-300 ease-out" />
+              <div className="absolute inset-0 bg-white/30 scale-x-0 origin-left group-hover:scale-x-100 transition-transform duration-300 ease-out" />
             </motion.button>
           </Link>
         </nav>
 
         {/* ─── Mobile Menu Toggle ─────────────────────────── */}
         <button
-          className={`lg:hidden p-2 rounded-lg transition-colors duration-300 ${
-            isScrolled ? 'text-brand-navy hover:bg-gray-100' : 'text-white hover:bg-white/10'
-          }`}
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
+          className={`lg:hidden p-2 rounded-xl transition-colors duration-300 text-white hover:bg-white/10`}
+          onClick={() => setMobileMenuOpen(true)}
+          aria-label="Open menu"
         >
-          {mobileMenuOpen ? <X size={30} /> : <Menu size={30} />}
+          <Menu size={32} />
         </button>
       </div>
 
-      {/* ─── Mobile Menu ──────────────────────────────────── */}
+      {/* ─── Mobile Menu Overlay ────────────────────────────── */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.35, ease: 'easeInOut' }}
-            className="lg:hidden bg-brand-navy/95 backdrop-blur-xl border-t border-white/10 overflow-hidden"
+            initial={{ opacity: 0, x: '100%' }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: '100%' }}
+            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+            className="fixed inset-0 z-[100] lg:hidden bg-[#050B14] flex flex-col"
           >
-            <div className="px-6 py-6 flex flex-col gap-5">
+            {/* Mobile Menu Header */}
+            <div className="flex justify-between items-center px-6 md:px-8 h-[72px] md:h-[90px] border-b border-white/10 shrink-0">
+              <Link to="/" onClick={() => setMobileMenuOpen(false)}>
+                <img 
+                  src="/logo.jpeg" 
+                  alt="SUJJU Logo"
+                  className="h-[36px] rounded-lg shadow-[0_0_15px_rgba(212,175,55,0.4)]"
+                />
+              </Link>
+              <button 
+                onClick={() => setMobileMenuOpen(false)}
+                className="p-3 text-white hover:bg-white/10 rounded-full transition-colors bg-white/5"
+                aria-label="Close menu"
+              >
+                <X size={32} />
+              </button>
+            </div>
+
+            {/* Mobile Menu Links */}
+            <div className="flex-1 overflow-y-auto py-10 px-6 flex flex-col justify-center gap-6 md:gap-8">
               {navLinks.map((link, idx) => (
                 <motion.div
                   key={link.name}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: idx * 0.06 }}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 + idx * 0.1 }}
                 >
                   <Link
                     to={link.path}
                     onClick={() => setMobileMenuOpen(false)}
-                    className={`block font-outfit py-2 transition-colors duration-200 ${
+                    className={`block font-outfit text-[32px] md:text-[40px] font-bold text-center transition-colors duration-200 ${
                       location.pathname === link.path
-                        ? 'text-brand-gold font-bold'
+                        ? 'text-brand-gold'
                         : 'text-white hover:text-brand-gold'
                     }`}
-                    style={{ fontSize: 20, fontWeight: 700, letterSpacing: '0.5px' }}
                   >
                     {link.name}
                   </Link>
                 </motion.div>
               ))}
 
-              <Link to="/contact" onClick={() => setMobileMenuOpen(false)}>
-                <button
-                  className="w-full mt-2 py-4 rounded-full font-outfit font-bold text-brand-navy"
-                  style={{ fontSize: 18, background: 'linear-gradient(135deg, #F4C542 0%, #D4AF37 100%)' }}
-                >
-                  Get in Touch
-                </button>
-              </Link>
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 }}
+                className="mt-8 px-4"
+              >
+                <Link to="/contact" onClick={() => setMobileMenuOpen(false)}>
+                  <button
+                    className="w-full py-5 rounded-full font-outfit font-bold text-brand-navy text-[20px] shadow-[0_4px_20px_rgba(212,175,55,0.4)] active:scale-95 transition-transform"
+                    style={{ background: 'linear-gradient(135deg, #F4C542 0%, #D4AF37 100%)' }}
+                  >
+                    Get in Touch
+                  </button>
+                </Link>
+              </motion.div>
             </div>
           </motion.div>
         )}

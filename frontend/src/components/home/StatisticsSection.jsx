@@ -13,7 +13,6 @@ const Counter = ({ from = 0, to, duration = 2, suffix = '' }) => {
         ease: "easeOut",
         onUpdate(value) {
           if (nodeRef.current) {
-            // Check if it's a number like 100+
             nodeRef.current.textContent = Math.floor(value) + suffix;
           }
         },
@@ -27,18 +26,18 @@ const Counter = ({ from = 0, to, duration = 2, suffix = '' }) => {
 };
 
 const stats = [
-  { value: 100, suffix: '+', label: 'Students Trained' },
-  { value: 20, suffix: '+', label: 'Workshops Conducted' },
-  { value: 15, suffix: '+', label: 'Project Awards', isString: 'Multiple' }, 
-  { value: 100, suffix: '%', label: 'Professional Client Services' },
+  { value: 500, suffix: '+', label: 'Students Trained' },
+  { value: 20, suffix: '+', label: 'College Events' },
+  { value: 100, suffix: '+', label: 'Projects' }, 
+  { value: 5, suffix: '+', label: 'Years Experience' },
 ];
 
 const StatisticsSection = () => {
   return (
-    <section className="py-20 bg-brand-navy relative overflow-hidden">
+    <section className="py-20 bg-[#050B14] relative overflow-hidden">
       {/* Decorative lines */}
-      <div className="absolute inset-0 opacity-10 pointer-events-none"
-           style={{ backgroundImage: 'linear-gradient(90deg, #D4AF37 1px, transparent 1px)', backgroundSize: '100px 100px' }} />
+      <div className="absolute inset-0 opacity-[0.03] pointer-events-none"
+           style={{ backgroundImage: 'linear-gradient(90deg, #D4AF37 1px, transparent 1px), linear-gradient(180deg, #D4AF37 1px, transparent 1px)', backgroundSize: '100px 100px' }} />
            
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 divide-x divide-white/10">
@@ -51,15 +50,10 @@ const StatisticsSection = () => {
               transition={{ duration: 0.6, delay: index * 0.1 }}
               className="text-center px-4"
             >
-              <div className="text-4xl md:text-5xl font-bold text-brand-gold mb-2 font-outfit">
-                {stat.isString ? (
-                  <Counter from={0} to={stat.value} duration={2} suffix={stat.suffix} /> // Will animate to 15+ then we can optionally just show the string, but let's stick to numbers for stats if possible, or handle string gracefully.
-                ) : (
-                  <Counter from={0} to={stat.value} duration={2} suffix={stat.suffix} />
-                )}
-                {stat.isString && <span className="block text-2xl mt-1 text-white">Multiple</span>}
+              <div className="text-4xl md:text-5xl lg:text-6xl font-bold text-brand-gold mb-3 font-outfit drop-shadow-md">
+                <Counter from={0} to={stat.value} duration={2.5} suffix={stat.suffix} />
               </div>
-              <p className="text-gray-300 font-inter text-sm md:text-base font-medium uppercase tracking-wide">
+              <p className="text-gray-400 font-inter text-sm md:text-base font-medium uppercase tracking-widest">
                 {stat.label}
               </p>
             </motion.div>

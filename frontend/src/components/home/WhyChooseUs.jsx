@@ -78,16 +78,19 @@ const WhyChooseUs = () => {
   }, []);
 
   return (
-    <section ref={sectionRef} className="py-24 bg-brand-bg relative overflow-hidden">
+    <section ref={sectionRef} className="py-24 bg-[#050B14] relative overflow-hidden">
       {/* Background decoration */}
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-brand-navy/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-brand-gold/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-brand-gold/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-brand-navy/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
       
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         <div className="text-center mb-16 section-title">
-          <h2 className="text-4xl md:text-5xl font-bold text-brand-navy mb-4 font-outfit">Why Choose Us</h2>
+          <p className="text-brand-gold font-bold text-sm uppercase tracking-[0.2em] mb-2 font-inter">
+            CORE FEATURES
+          </p>
+          <h2 className="text-3xl md:text-5xl font-bold text-white mb-4 font-outfit">Why Choose Us</h2>
           <div className="w-24 h-1 bg-brand-gold mx-auto rounded-full mb-6"></div>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto font-inter">
+          <p className="text-lg text-gray-400 max-w-2xl mx-auto font-inter">
             We combine technical excellence with industry insight to deliver solutions that matter.
           </p>
         </div>
@@ -97,20 +100,20 @@ const WhyChooseUs = () => {
             <div 
               key={index}
               ref={el => cardsRef.current[index] = el}
-              className="glass p-8 rounded-2xl group hover-glow relative overflow-hidden transition-all duration-300 transform hover:-translate-y-2 bg-white/80"
+              className="glass-dark p-8 rounded-2xl group hover-glow relative overflow-hidden transition-all duration-300 transform hover:-translate-y-2 bg-[#081225] border border-white/5"
             >
               {/* Hover gradient background effect */}
-              <div className="absolute inset-0 bg-gradient-to-br from-brand-navy/5 to-brand-gold/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <div className="absolute inset-0 bg-gradient-to-br from-brand-gold/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               
-              <div className="w-16 h-16 bg-brand-bg rounded-xl flex items-center justify-center mb-6 shadow-sm group-hover:scale-110 transition-transform duration-300">
+              <div className="w-16 h-16 bg-[#050B14] border border-white/5 rounded-xl flex items-center justify-center mb-6 shadow-sm group-hover:scale-110 transition-transform duration-300">
                 {feature.icon}
               </div>
               
-              <h3 className="text-xl font-bold text-brand-navy mb-3 font-outfit relative z-10">
+              <h3 className="text-xl font-bold text-white mb-3 font-outfit relative z-10">
                 {feature.title}
               </h3>
               
-              <p className="text-gray-600 font-inter text-sm leading-relaxed relative z-10">
+              <p className="text-gray-400 font-inter text-sm leading-relaxed relative z-10">
                 {feature.description}
               </p>
             </div>

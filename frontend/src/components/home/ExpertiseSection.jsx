@@ -37,15 +37,24 @@ const expertise = [
 
 const ExpertiseSection = () => {
   return (
-    <section className="py-24 bg-white relative">
+    <section className="py-24 bg-[#050B14] relative">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-16">
+          <motion.p
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="text-brand-gold font-bold text-sm uppercase tracking-[0.2em] mb-2 font-inter"
+          >
+            WHAT WE DO
+          </motion.p>
           <motion.h2 
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="text-4xl md:text-5xl font-bold text-brand-navy mb-4 font-outfit"
+            className="text-4xl md:text-5xl font-bold text-white mb-4 font-outfit"
           >
             Our Expertise
           </motion.h2>
@@ -61,7 +70,7 @@ const ExpertiseSection = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.3 }}
-            className="text-lg text-gray-600 max-w-2xl mx-auto font-inter"
+            className="text-lg text-gray-400 max-w-2xl mx-auto font-inter"
           >
             Delivering excellence across a wide spectrum of technological domains.
           </motion.p>
@@ -75,20 +84,20 @@ const ExpertiseSection = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-50px" }}
               transition={{ duration: 0.6, delay: index * 0.1 }}
-              className="group relative p-8 bg-brand-bg rounded-2xl transition-all duration-300 hover:shadow-2xl hover:shadow-brand-navy/10 overflow-hidden border border-transparent hover:border-brand-gold/30"
+              className="group relative p-8 bg-[#081225] border border-white/5 rounded-2xl transition-all duration-300 hover:shadow-2xl hover:shadow-brand-gold/10 overflow-hidden hover:border-brand-gold/30"
             >
               {/* Gradient Border simulation */}
-              <div className="absolute inset-0 bg-gradient-to-br from-brand-navy via-brand-gold to-brand-navy opacity-0 group-hover:opacity-10 transition-opacity duration-500" />
+              <div className="absolute inset-0 bg-gradient-to-br from-brand-gold/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               
-              <div className="w-14 h-14 bg-white rounded-xl shadow-md flex items-center justify-center text-brand-navy mb-6 group-hover:text-brand-gold group-hover:-translate-y-2 transition-all duration-300">
+              <div className="w-14 h-14 bg-[#050B14] border border-white/5 rounded-xl shadow-md flex items-center justify-center text-white mb-6 group-hover:text-brand-gold group-hover:-translate-y-2 transition-all duration-300">
                 {item.icon}
               </div>
               
-              <h3 className="text-xl font-bold text-brand-navy mb-3 font-outfit">
+              <h3 className="text-xl font-bold text-white mb-3 font-outfit">
                 {item.title}
               </h3>
               
-              <p className="text-gray-600 font-inter text-sm leading-relaxed relative z-10">
+              <p className="text-gray-400 font-inter text-sm leading-relaxed relative z-10">
                 {item.description}
               </p>
               

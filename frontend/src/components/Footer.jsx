@@ -8,7 +8,7 @@ const Footer = () => {
   };
 
   return (
-    <footer className="bg-brand-navy pt-20 pb-10 text-gray-300 relative overflow-hidden">
+    <footer className="bg-[#050B14] pt-20 pb-10 text-gray-400 relative overflow-hidden border-t border-white/5">
       <div className="absolute top-0 right-0 w-64 h-64 bg-brand-gold/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
 
       <div className="max-w-7xl mx-auto px-6 relative z-10">
@@ -21,18 +21,18 @@ const Footer = () => {
                 src="/logo.jpeg"
                 alt="SUJJU Software Solutions Logo"
                 style={{
-                  width: 100,
-                  height: 100,
+                  width: 80,
+                  height: 80,
                   objectFit: 'contain',
                   borderRadius: 12,
-                  filter: 'drop-shadow(0 0 10px rgba(212,175,55,0.5))',
+                  filter: 'drop-shadow(0 0 10px rgba(212,175,55,0.3))',
                 }}
               />
               <div className="flex flex-col leading-tight">
-                <span className="font-outfit font-extrabold text-white" style={{ fontSize: 28 }}>
+                <span className="font-outfit font-extrabold text-white" style={{ fontSize: 24 }}>
                   SUJJU Software
                 </span>
-                <span className="font-inter font-semibold text-brand-gold/80" style={{ fontSize: 13, letterSpacing: '0.18em', textTransform: 'uppercase' }}>
+                <span className="font-inter font-semibold text-brand-gold/80" style={{ fontSize: 11, letterSpacing: '0.18em', textTransform: 'uppercase' }}>
                   Solutions
                 </span>
               </div>
@@ -41,16 +41,16 @@ const Footer = () => {
               Transforming Ideas into Intelligent Digital Solutions. We deliver premium software, AI integrations, and professional technical training.
             </p>
             <div className="flex gap-4">
-              <a href="#" aria-label="LinkedIn" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-brand-gold hover:text-brand-navy transition-colors font-bold text-xs">
+              <a href="#" aria-label="LinkedIn" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-brand-gold hover:text-[#050B14] hover:-translate-y-1 transition-all duration-300 font-bold text-xs text-white">
                 IN
               </a>
-              <a href="#" aria-label="Twitter" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-brand-gold hover:text-brand-navy transition-colors font-bold text-xs">
+              <a href="#" aria-label="Twitter" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-brand-gold hover:text-[#050B14] hover:-translate-y-1 transition-all duration-300 font-bold text-xs text-white">
                 TW
               </a>
-              <a href="#" aria-label="Facebook" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-brand-gold hover:text-brand-navy transition-colors font-bold text-xs">
+              <a href="#" aria-label="Facebook" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-brand-gold hover:text-[#050B14] hover:-translate-y-1 transition-all duration-300 font-bold text-xs text-white">
                 FB
               </a>
-              <a href="#" aria-label="Instagram" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-brand-gold hover:text-brand-navy transition-colors font-bold text-xs">
+              <a href="#" aria-label="Instagram" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-brand-gold hover:text-[#050B14] hover:-translate-y-1 transition-all duration-300 font-bold text-xs text-white">
                 IG
               </a>
             </div>

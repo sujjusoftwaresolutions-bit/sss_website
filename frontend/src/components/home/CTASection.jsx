@@ -5,9 +5,9 @@ import { ArrowRight } from 'lucide-react';
 
 const CTASection = () => {
   return (
-    <section className="py-24 bg-brand-bg relative overflow-hidden">
+    <section className="py-24 bg-[#050B14] relative overflow-hidden border-t border-white/5">
       {/* Abstract Background Shapes */}
-      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-brand-navy/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3" />
+      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-brand-gold/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3" />
       <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-brand-gold/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
       
       <div className="max-w-4xl mx-auto px-6 relative z-10 text-center">
@@ -16,13 +16,14 @@ const CTASection = () => {
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="glass p-12 rounded-3xl border border-brand-gold/20 shadow-2xl bg-white/60 backdrop-blur-xl"
+          className="glass-dark p-12 rounded-3xl border border-white/10 shadow-2xl bg-[#081225] backdrop-blur-xl relative overflow-hidden"
         >
-          <h2 className="text-4xl md:text-5xl font-bold text-brand-navy mb-6 font-outfit">
+          <div className="absolute inset-0 bg-gradient-to-br from-brand-gold/10 to-transparent opacity-50" />
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 font-outfit relative z-10">
             Ready to Transform Your Ideas?
           </h2>
           
-          <p className="text-xl text-gray-600 mb-10 font-inter max-w-2xl mx-auto">
+          <p className="text-xl text-gray-400 mb-10 font-inter max-w-2xl mx-auto relative z-10">
             Whether you need custom software, AI solutions, or industry-level training, we are here to help you achieve your goals.
           </p>
           
