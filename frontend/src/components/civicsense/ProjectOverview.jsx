@@ -31,7 +31,7 @@ const ProjectOverview = () => {
           transition={{ duration: 0.8 }}
           className="text-center mb-24"
         >
-          <h2 className="text-4xl font-bold text-brand-navy mb-6 font-outfit">Abstract</h2>
+          <h2 className="text-4xl font-bold text-heading mb-6 font-outfit">Abstract</h2>
           <div className="w-20 h-1 bg-brand-gold mx-auto rounded-full mb-8" />
           <p className="text-xl text-gray-700 max-w-4xl mx-auto font-inter leading-relaxed">
             CivicSense AI is an intelligent web and mobile platform that empowers citizens and authorities to collaboratively detect, report, and resolve civic issues such as potholes, garbage overflow, and streetlight failures through AI-powered automation.
@@ -46,7 +46,7 @@ const ProjectOverview = () => {
             viewport={{ once: true }}
             className="mb-12"
           >
-            <h3 className="text-3xl font-bold text-brand-navy mb-4 font-outfit flex items-center gap-3">
+            <h3 className="text-3xl font-bold text-heading mb-4 font-outfit flex items-center gap-3">
               <AlertCircle className="text-red-500" /> The Problem
             </h3>
             <p className="text-gray-600 font-inter">Traditional complaint systems are failing our modern cities due to:</p>
@@ -80,7 +80,7 @@ const ProjectOverview = () => {
             viewport={{ once: true }}
             className="mb-12"
           >
-            <h3 className="text-3xl font-bold text-brand-navy mb-4 font-outfit text-center">
+            <h3 className="text-3xl font-bold text-heading mb-4 font-outfit text-center">
               Core Features
             </h3>
             <div className="w-20 h-1 bg-brand-gold mx-auto rounded-full mb-8" />
@@ -101,7 +101,7 @@ const ProjectOverview = () => {
                   <div className="w-14 h-14 bg-brand-navy rounded-xl text-brand-gold flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300">
                     {feature.icon}
                   </div>
-                  <h4 className="text-xl font-bold text-brand-navy mb-3 font-outfit">{feature.title}</h4>
+                  <h4 className="text-xl font-bold text-heading mb-3 font-outfit">{feature.title}</h4>
                   <p className="text-sm text-gray-600 font-inter leading-relaxed">{feature.desc}</p>
                 </div>
               </motion.div>
