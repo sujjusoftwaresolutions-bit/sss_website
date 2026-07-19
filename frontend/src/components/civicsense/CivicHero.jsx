@@ -108,7 +108,7 @@ const CivicHero = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.8, ease: "easeOut" }}
-          className="flex flex-col sm:flex-row gap-6 justify-center"
+          className="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-6 w-full"
         >
           <button className="px-8 py-4 bg-brand-gold text-brand-navy font-bold text-lg rounded-full hover:shadow-[0_0_30px_rgba(212,175,55,0.6)] transition-all duration-300 relative overflow-hidden group">
             <span className="relative z-10">Explore Features</span>
