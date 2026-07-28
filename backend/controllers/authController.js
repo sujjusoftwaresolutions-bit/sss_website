@@ -43,13 +43,16 @@ const registerUser = async (req, res) => {
         success: true,
         message: 'Registration successful. Please verify OTPs.',
         userId: user._id,
+        // REMOVE IN PRODUCTION — only for testing since email/sms is mocked
+        debug_emailOtp: process.env.NODE_ENV !== 'production' ? emailOtp : undefined,
+        debug_phoneOtp: process.env.NODE_ENV !== 'production' ? phoneOtp : undefined,
       });
     } else {
       res.status(400).json({ success: false, message: 'Invalid user data' });
     }
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ success: false, message: 'Server error during registration' });
+    console.error('Registration error:', error.message, error.stack);
+    res.status(500).json({ success: false, message: `Server error during registration: ${error.message}` });
   }
 };
 

@@ -5,6 +5,7 @@ const userSchema = new mongoose.Schema({
   studentId: {
     type: String,
     unique: true,
+    sparse: true,
   },
   fullName: {
     type: String,
@@ -30,11 +31,14 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     unique: true,
+    lowercase: true,
+    trim: true,
   },
   phone: {
     type: String,
     required: true,
     unique: true,
+    trim: true,
   },
   password: {
     type: String,
@@ -55,29 +59,31 @@ const userSchema = new mongoose.Schema({
   }
 }, { timestamps: true });
 
-// Pre-save hook to hash password
+// Combined pre-save hook: hash password + generate studentId
 userSchema.pre('save', async function(next) {
-  if (!this.isModified('password')) {
-    return next();
+  try {
+    // 1. Hash password if it was modified
+    if (this.isModified('password')) {
+      const salt = await bcrypt.genSalt(10);
+      this.password = await bcrypt.hash(this.password, salt);
+    }
+
+    // 2. Generate unique studentId for new users
+    if (this.isNew && !this.studentId) {
+      const count = await this.constructor.countDocuments();
+      const paddedCount = String(count + 1).padStart(5, '0');
+      this.studentId = `SSS${new Date().getFullYear()}${paddedCount}`;
+    }
+
+    next();
+  } catch (err) {
+    next(err);
   }
-  const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password, salt);
-  next();
 });
 
-// Method to match entered password to hashed password in database
+// Method to compare entered password to hashed password in DB
 userSchema.methods.matchPassword = async function(enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
-
-// Generate studentId before saving if it's a new user
-userSchema.pre('save', async function(next) {
-  if (this.isNew && !this.studentId) {
-    const count = await this.constructor.countDocuments();
-    const paddedCount = String(count + 1).padStart(5, '0');
-    this.studentId = `SSS${new Date().getFullYear()}${paddedCount}`;
-  }
-  next();
-});
 
 module.exports = mongoose.model('User', userSchema);
