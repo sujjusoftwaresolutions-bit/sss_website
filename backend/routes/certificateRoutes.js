@@ -1,8 +1,10 @@
 const express = require('express');
-const { getCertificateById } = require('../controllers/certificateController.js');
+const { getCertificateById, getUserCertificates } = require('../controllers/certificateController');
+const { protect } = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
-router.get('/:id', getCertificateById);
+router.get('/my-certificates', protect, getUserCertificates);
+router.get('/:id', protect, getCertificateById);
 
 module.exports = router;

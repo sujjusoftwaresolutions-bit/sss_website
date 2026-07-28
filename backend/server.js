@@ -15,8 +15,11 @@ app.use(helmet()); // Sets secure HTTP headers
 // CORS — only allow the frontend origin
 const allowedOrigins = [
   process.env.FRONTEND_URL || 'http://localhost:5173',
+  'http://localhost:5173',
   'https://sujjusoftware.com',
   'https://www.sujjusoftware.com',
+  'https://sujjusoftwaresolutions.netlify.app',
+  'https://www.sujjusoftwaresolutions.netlify.app',
 ];
 app.use(cors({
   origin: (origin, callback) => {
@@ -66,6 +69,7 @@ app.use('/api/contact', require('./routes/contactRoutes'));
 app.use('/api/services', require('./routes/serviceRoutes'));
 app.use('/api/gallery', require('./routes/galleryRoutes'));
 app.use('/api/certificates', require('./routes/certificateRoutes'));
+app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/ai', require('./routes/aiRoutes'));
 
 // ─── Health Check ─────────────────────────────────────────────────────────────

@@ -1,45 +1,40 @@
-// Mock Database
-const certificatesDB = [
-  {
-    certificateId: 'SSS_3245',
-    studentName: 'John Doe',
-    courseName: 'Cybersecurity',
-    issueDate: '2026-07-28T00:00:00Z',
-    // Using a placeholder image for now. In production, this would be a link to AWS S3, Google Cloud Storage, or similar secure storage.
-    certificateImageUrl: 'https://placehold.co/800x600/1e293b/d4af37?text=SUJJU+Software+Solutions%5CnOfficial+Certificate%5CnID:+SSS_3245'
-  },
-  {
-    certificateId: 'SSS_1001',
-    studentName: 'Jane Smith',
-    courseName: 'Full Stack Development',
-    issueDate: '2026-06-15T00:00:00Z',
-    certificateImageUrl: 'https://placehold.co/800x600/1e293b/d4af37?text=SUJJU+Software+Solutions%5CnOfficial+Certificate%5CnID:+SSS_1001'
-  }
-];
+const Certificate = require('../models/Certificate');
 
 // @desc    Get certificate by ID
 // @route   GET /api/certificates/:id
-// @access  Public
+// @access  Private
 const getCertificateById = async (req, res) => {
   try {
     const certId = req.params.id;
-    
-    // Simulate DB delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    const certificate = await Certificate.findOne({ certificateId: certId });
 
-    const certificate = certificatesDB.find(
-      (cert) => cert.certificateId.toUpperCase() === certId.toUpperCase()
-    );
-
-    if (certificate) {
-      res.json(certificate);
-    } else {
-      res.status(404).json({ message: 'Certificate not found. Please check the ID and try again.' });
+    if (!certificate) {
+      return res.status(404).json({ success: false, message: 'Invalid Certificate ID.' });
     }
+
+    // Verify Ownership
+    if (certificate.userId.toString() !== req.user.id && req.user.role !== 'admin') {
+      return res.status(403).json({ success: false, message: 'Unauthorized. This certificate does not belong to you.' });
+    }
+
+    res.json({ success: true, certificate });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Server error while verifying certificate' });
+    res.status(500).json({ success: false, message: 'Server error while verifying certificate' });
   }
 };
 
-module.exports = { getCertificateById };
+// @desc    Get user's certificates
+// @route   GET /api/certificates/my-certificates
+// @access  Private
+const getUserCertificates = async (req, res) => {
+  try {
+    const certificates = await Certificate.find({ userId: req.user.id });
+    res.json({ success: true, certificates });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Server error fetching certificates' });
+  }
+};
+
+module.exports = { getCertificateById, getUserCertificates };

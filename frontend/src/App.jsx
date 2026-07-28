@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-route
 import { AnimatePresence } from 'framer-motion';
 import MainLayout from './layouts/MainLayout';
 import LoadingScreen from './components/LoadingScreen';
+import { AuthProvider } from './context/AuthContext';
+import ProtectedRoute from './components/ProtectedRoute';
 
 // Lazy load pages for performance
 const Home = lazy(() => import('./pages/Home'));
@@ -13,6 +15,9 @@ const Contact = lazy(() => import('./pages/Contact'));
 const Internships = lazy(() => import('./pages/Internships'));
 const VerifyCertificate = lazy(() => import('./pages/VerifyCertificate'));
 const JoinNow = lazy(() => import('./pages/JoinNow'));
+const Login = lazy(() => import('./pages/Login'));
+const Signup = lazy(() => import('./pages/Signup'));
+const Dashboard = lazy(() => import('./pages/Dashboard'));
 
 // AnimatePresence requires the Routes to have the location object and key
 function AnimatedRoutes() {
@@ -20,14 +25,23 @@ function AnimatedRoutes() {
   return (
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
+        {/* Public Routes */}
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/services" element={<Services />} />
         <Route path="/civicsense-ai" element={<CivicSenseAI />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/internships" element={<Internships />} />
-        <Route path="/verify-certificate" element={<VerifyCertificate />} />
         <Route path="/join-now" element={<JoinNow />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+
+        {/* Protected Routes */}
+        <Route element={<ProtectedRoute />}>
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/verify-certificate" element={<VerifyCertificate />} />
+          <Route path="/verify" element={<VerifyCertificate />} />
+        </Route>
       </Routes>
     </AnimatePresence>
   );
@@ -36,11 +50,13 @@ function AnimatedRoutes() {
 function App() {
   return (
     <Router>
-      <Suspense fallback={<LoadingScreen />}>
-        <MainLayout>
-          <AnimatedRoutes />
-        </MainLayout>
-      </Suspense>
+      <AuthProvider>
+        <Suspense fallback={<LoadingScreen />}>
+          <MainLayout>
+            <AnimatedRoutes />
+          </MainLayout>
+        </Suspense>
+      </AuthProvider>
     </Router>
   );
 }
