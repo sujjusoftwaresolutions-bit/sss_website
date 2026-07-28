@@ -72,6 +72,21 @@ app.use('/api/certificates', require('./routes/certificateRoutes'));
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/ai', require('./routes/aiRoutes'));
 
+// ─── Root Route ───────────────────────────────────────────────────────────────
+app.get('/', (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: '🚀 SUJJU Software Solutions API is live!',
+    version: '1.0.0',
+    endpoints: {
+      auth: '/api/auth',
+      certificates: '/api/certificates',
+      contact: '/api/contact',
+      health: '/health',
+    }
+  });
+});
+
 // ─── Health Check ─────────────────────────────────────────────────────────────
 app.get('/health', (req, res) => {
   res.status(200).json({
