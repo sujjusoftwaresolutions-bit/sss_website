@@ -115,7 +115,7 @@ const Internships = () => {
               className="bg-white/5 border border-white/10 rounded-2xl p-6 md:p-8 flex flex-col h-full relative overflow-hidden group"
             >
               {/* Animated background gradient on hover */}
-              <div className={`absolute inset-0 bg-gradient-to-br ${course.color} opacity-0 group-hover:opacity-5 transition-opacity duration-500`} />
+              <div className={`absolute inset-0 pointer-events-none bg-gradient-to-br ${course.color} opacity-0 group-hover:opacity-5 transition-opacity duration-500`} />
               
               <div className="flex items-center gap-4 mb-6">
                 <div className={`p-3 rounded-xl bg-gradient-to-br ${course.color} bg-opacity-20 flex shrink-0 shadow-lg`}>
