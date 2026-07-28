@@ -12,6 +12,7 @@ const CivicSenseAI = lazy(() => import('./pages/CivicSenseAI'));
 const Contact = lazy(() => import('./pages/Contact'));
 const Internships = lazy(() => import('./pages/Internships'));
 const VerifyCertificate = lazy(() => import('./pages/VerifyCertificate'));
+const JoinNow = lazy(() => import('./pages/JoinNow'));
 
 // AnimatePresence requires the Routes to have the location object and key
 function AnimatedRoutes() {
@@ -26,6 +27,7 @@ function AnimatedRoutes() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/internships" element={<Internships />} />
         <Route path="/verify-certificate" element={<VerifyCertificate />} />
+        <Route path="/join-now" element={<JoinNow />} />
       </Routes>
     </AnimatePresence>
   );
