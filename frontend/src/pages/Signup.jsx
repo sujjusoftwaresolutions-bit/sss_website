@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { User, Mail, Phone, Book, GraduationCap, Building2, Lock, ArrowRight, CheckCircle2 } from 'lucide-react';
@@ -24,6 +24,8 @@ const Signup = () => {
   
   const { login } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || '/dashboard';
 
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -77,7 +79,7 @@ const Signup = () => {
       
       if (response.data.success) {
         login(response.data.token, response.data.user);
-        navigate('/dashboard');
+        navigate(from, { replace: true });
       }
     } catch (err) {
       setError(err.response?.data?.message || 'OTP Verification failed.');

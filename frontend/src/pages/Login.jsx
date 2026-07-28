@@ -12,6 +12,8 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || '/dashboard';
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -22,7 +24,7 @@ const Login = () => {
       const response = await axios.post('/auth/login', { loginId, password });
       if (response.data.success) {
         login(response.data.token, response.data.user);
-        navigate('/dashboard');
+        navigate(from, { replace: true });
       }
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed. Please try again.');
