@@ -65,6 +65,7 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/sujju_sof
 app.use('/api/contact', require('./routes/contactRoutes'));
 app.use('/api/services', require('./routes/serviceRoutes'));
 app.use('/api/gallery', require('./routes/galleryRoutes'));
+app.use('/api/certificates', require('./routes/certificateRoutes'));
 app.use('/ai', require('./routes/aiRoutes'));
 
 // ─── Health Check ─────────────────────────────────────────────────────────────
