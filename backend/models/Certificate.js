@@ -6,33 +6,60 @@ const certificateSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
-  studentId: {
-    type: String,
-    required: true,
-  },
+  // Link to registered User (optional — allows public certificates too)
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
+    default: null,
+  },
+  studentId: {
+    type: String,
+    default: null, // e.g. SSS2025001 — populated when user links their account
+  },
+  studentName: {
+    type: String,
     required: true,
+  },
+  studentEmail: {
+    type: String,
+    required: true,
+    lowercase: true,
+  },
+  rollNumber: {
+    type: String,
+    default: '',
+  },
+  collegeName: {
+    type: String,
+    default: '',
+  },
+  department: {
+    type: String,
+    default: '',
+  },
+  year: {
+    type: String,
+    default: '',
   },
   course: {
     type: String,
     required: true,
   },
+  duration: {
+    type: String,
+    default: '30 Days',
+  },
+  grade: {
+    type: String,
+    default: 'A',
+  },
   issuedDate: {
     type: Date,
     required: true,
   },
-  duration: {
-    type: String,
-    required: true,
-  },
-  grade: {
-    type: String,
-  },
   certificateURL: {
     type: String,
-    required: true,
+    default: '', // Empty if PDF not uploaded yet
   },
   status: {
     type: String,
