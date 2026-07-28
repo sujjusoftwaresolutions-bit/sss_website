@@ -10,7 +10,7 @@ const courses = [
     duration: '3 Months',
     description: 'Master MongoDB, Express.js, React, and Node.js to build dynamic, full-stack web applications from scratch.',
     brochureUrl: '#', // TODO: Update with actual Google Drive URL
-    joinUrl: 'https://forms.gle/A8MHtY21MTPKnkLDA',     // Redirects to Google Form
+    joinUrl: '/join-now',     // Redirects to Google Form
     color: 'from-blue-500 to-indigo-600',
   },
   {
@@ -19,7 +19,7 @@ const courses = [
     duration: '3 Months',
     description: 'Learn ethical hacking, network security, and vulnerability assessment to protect systems from modern cyber threats.',
     brochureUrl: '#', 
-    joinUrl: 'https://forms.gle/A8MHtY21MTPKnkLDA',     
+    joinUrl: '/join-now',     
     color: 'from-red-500 to-pink-600',
   },
   {
@@ -28,7 +28,7 @@ const courses = [
     duration: '3 Months',
     description: 'Dive deep into data manipulation, visualization, and statistical analysis using Python, Pandas, and Matplotlib.',
     brochureUrl: '#', 
-    joinUrl: 'https://forms.gle/A8MHtY21MTPKnkLDA',     
+    joinUrl: '/join-now',     
     color: 'from-green-500 to-emerald-600',
   },
   {
@@ -37,7 +37,7 @@ const courses = [
     duration: '3 Months',
     description: 'Design and develop cross-platform mobile applications that provide seamless user experiences on iOS and Android.',
     brochureUrl: '#', 
-    joinUrl: 'https://forms.gle/A8MHtY21MTPKnkLDA',     
+    joinUrl: '/join-now',     
     color: 'from-purple-500 to-violet-600',
   },
   {
@@ -46,7 +46,7 @@ const courses = [
     duration: '3 Months',
     description: 'Explore the Internet of Things, embedded C programming, and microcontroller interfacing to build smart connected devices.',
     brochureUrl: '#', 
-    joinUrl: 'https://forms.gle/A8MHtY21MTPKnkLDA',     
+    joinUrl: '/join-now',     
     color: 'from-orange-500 to-amber-600',
   },
 ];
