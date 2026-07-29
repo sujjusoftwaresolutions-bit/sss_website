@@ -4,6 +4,9 @@ const nodemailer = require('nodemailer');
 // Basic input sanitizer — strips HTML tags to prevent XSS in email body
 const sanitize = (str) => (str || '').toString().replace(/<[^>]*>/g, '').trim().slice(0, 2000);
 
+// Always deliver contact form emails to this address
+const ADMIN_EMAIL = 'sujjusoftwaresolutions@gmail.com';
+
 const submitContactForm = async (req, res) => {
   try {
     const { name, email, phone, subject, message } = req.body;
@@ -45,48 +48,88 @@ const submitContactForm = async (req, res) => {
     });
     await newMessage.save();
 
-    // ─── Send Email via Nodemailer ─────────────────────────────────────────────
-    if (process.env.SMTP_HOST && process.env.SMTP_EMAIL && process.env.SMTP_PASSWORD) {
+    // ─── Send Email via Gmail SMTP ────────────────────────────────────────────
+    if (process.env.SMTP_EMAIL && process.env.SMTP_PASSWORD) {
       const transporter = nodemailer.createTransport({
-        host: process.env.SMTP_HOST,
-        port: Number(process.env.SMTP_PORT) || 587,
-        secure: Number(process.env.SMTP_PORT) === 465,
+        service: 'gmail',
         auth: {
-          user: process.env.SMTP_EMAIL,
-          pass: process.env.SMTP_PASSWORD,
+          user: process.env.SMTP_EMAIL,      // sujjusoftwaresolutions@gmail.com
+          pass: process.env.SMTP_PASSWORD,   // Gmail App Password (16-char)
         },
       });
 
+      // Notify admin (SUJJU inbox)
       await transporter.sendMail({
         from: `"SUJJU Software Solutions" <${process.env.SMTP_EMAIL}>`,
         replyTo: cleanEmail,
-        to: process.env.SMTP_EMAIL,
-        subject: `[Contact Form] ${cleanSubject}`,
+        to: ADMIN_EMAIL,
+        subject: `📩 [Contact Form] ${cleanSubject} – from ${cleanName}`,
         html: `
-          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
-            <div style="background: #0A2F6B; color: white; padding: 24px;">
-              <h2 style="margin: 0; font-size: 20px;">New Contact Form Submission</h2>
-              <p style="margin: 4px 0 0; opacity: 0.8; font-size: 14px;">SUJJU Software Solutions Website</p>
+          <div style="font-family: Arial, sans-serif; max-width: 620px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 10px; overflow: hidden;">
+            <div style="background: linear-gradient(135deg, #0A2F6B 0%, #0d3a85 100%); color: white; padding: 28px 24px;">
+              <h2 style="margin: 0; font-size: 22px;">📬 New Contact Form Submission</h2>
+              <p style="margin: 6px 0 0; opacity: 0.8; font-size: 14px;">SUJJU Software Solutions — Website</p>
             </div>
-            <div style="padding: 24px;">
+            <div style="padding: 28px 24px; background: #fff;">
               <table style="width: 100%; border-collapse: collapse;">
-                <tr><td style="padding: 8px 0; color: #64748b; font-size: 14px; width: 120px;">Name</td><td style="padding: 8px 0; font-weight: 600;">${cleanName}</td></tr>
-                <tr><td style="padding: 8px 0; color: #64748b; font-size: 14px;">Email</td><td style="padding: 8px 0;"><a href="mailto:${cleanEmail}">${cleanEmail}</a></td></tr>
-                <tr><td style="padding: 8px 0; color: #64748b; font-size: 14px;">Phone</td><td style="padding: 8px 0;">${cleanPhone || 'Not provided'}</td></tr>
-                <tr><td style="padding: 8px 0; color: #64748b; font-size: 14px;">Subject</td><td style="padding: 8px 0; font-weight: 600;">${cleanSubject}</td></tr>
+                <tr style="border-bottom: 1px solid #f1f5f9;">
+                  <td style="padding: 10px 0; color: #64748b; font-size: 14px; width: 110px;">👤 Name</td>
+                  <td style="padding: 10px 0; font-weight: 700; color: #1e293b;">${cleanName}</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #f1f5f9;">
+                  <td style="padding: 10px 0; color: #64748b; font-size: 14px;">📧 Email</td>
+                  <td style="padding: 10px 0;"><a href="mailto:${cleanEmail}" style="color: #0A2F6B; font-weight: 600;">${cleanEmail}</a></td>
+                </tr>
+                <tr style="border-bottom: 1px solid #f1f5f9;">
+                  <td style="padding: 10px 0; color: #64748b; font-size: 14px;">📞 Phone</td>
+                  <td style="padding: 10px 0; color: #374151;">${cleanPhone || '<em style="color:#94a3b8;">Not provided</em>'}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 10px 0; color: #64748b; font-size: 14px;">📌 Subject</td>
+                  <td style="padding: 10px 0; font-weight: 700; color: #1e293b;">${cleanSubject}</td>
+                </tr>
               </table>
-              <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 16px 0;">
-              <h4 style="margin: 0 0 8px; color: #0A2F6B;">Message</h4>
-              <p style="margin: 0; line-height: 1.6; color: #374151;">${cleanMessage}</p>
+              <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 20px 0;">
+              <h4 style="margin: 0 0 10px; color: #0A2F6B; font-size: 15px;">💬 Message</h4>
+              <p style="margin: 0; line-height: 1.8; color: #374151; background: #f8fafc; padding: 16px; border-radius: 8px; border-left: 4px solid #D4AF37;">${cleanMessage}</p>
             </div>
-            <div style="background: #F8FAFC; padding: 16px 24px; font-size: 12px; color: #94a3b8;">
-              This message was submitted via the contact form on sujjusoftware.com
+            <div style="background: #F8FAFC; padding: 16px 24px; font-size: 12px; color: #94a3b8; text-align: center;">
+              Submitted via the contact form on <strong>sujjusoftwaresolutions.netlify.app</strong> · ${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })} IST
             </div>
           </div>
         `,
       });
+
+      // Auto-reply to the user who submitted
+      await transporter.sendMail({
+        from: `"SUJJU Software Solutions" <${process.env.SMTP_EMAIL}>`,
+        to: cleanEmail,
+        subject: `We received your message – SUJJU Software Solutions`,
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 580px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 10px; overflow: hidden;">
+            <div style="background: linear-gradient(135deg, #0A2F6B 0%, #0d3a85 100%); color: white; padding: 28px 24px; text-align: center;">
+              <h2 style="margin: 0; font-size: 22px;">Thank You, ${cleanName}! 🙏</h2>
+              <p style="margin: 8px 0 0; opacity: 0.85; font-size: 15px;">We've received your message and will respond within 24 hours.</p>
+            </div>
+            <div style="padding: 28px 24px; background: #fff;">
+              <p style="margin: 0 0 16px; color: #374151; line-height: 1.7;">Hi <strong>${cleanName}</strong>,</p>
+              <p style="margin: 0 0 16px; color: #374151; line-height: 1.7;">
+                Thank you for reaching out to <strong>SUJJU Software Solutions</strong>. Our team has received your enquiry regarding <em>"${cleanSubject}"</em> and we will get back to you as soon as possible.
+              </p>
+              <p style="margin: 0; color: #374151; line-height: 1.7;">
+                In the meantime, feel free to explore our services at <a href="https://sujjusoftwaresolutions.netlify.app" style="color: #D4AF37;">sujjusoftwaresolutions.netlify.app</a>.
+              </p>
+            </div>
+            <div style="background: #F8FAFC; padding: 16px 24px; font-size: 12px; color: #94a3b8; text-align: center;">
+              © SUJJU Software Solutions · <a href="mailto:sujjusoftwaresolutions@gmail.com" style="color: #94a3b8;">sujjusoftwaresolutions@gmail.com</a>
+            </div>
+          </div>
+        `,
+      });
+
+      console.log(`✅ Contact email sent: "${cleanSubject}" from ${cleanEmail}`);
     } else {
-      console.warn('⚠️  SMTP not configured. Message saved to DB but email was not sent.');
+      console.warn('⚠️  SMTP_EMAIL or SMTP_PASSWORD not set. Message saved to DB but email was NOT sent.');
     }
 
     res.status(201).json({ success: true, message: 'Your message has been received. We will get back to you soon!' });
