@@ -16,7 +16,7 @@ const Internships = lazy(() => import('./pages/Internships'));
 const VerifyCertificate = lazy(() => import('./pages/VerifyCertificate'));
 const JoinNow = lazy(() => import('./pages/JoinNow'));
 const Login = lazy(() => import('./pages/Login'));
-const Signup = lazy(() => import('./pages/Signup'));
+
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 
 // AnimatePresence requires the Routes to have the location object and key
@@ -34,7 +34,7 @@ function AnimatedRoutes() {
         <Route path="/internships" element={<Internships />} />
         <Route path="/join-now" element={<JoinNow />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
+
 
         {/* Protected Routes */}
         <Route element={<ProtectedRoute />}>

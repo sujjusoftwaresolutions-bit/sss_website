@@ -18,7 +18,7 @@ const VerifyCertificate = () => {
   // Redirect to signup if not authenticated
   useEffect(() => {
     if (!isAuthenticated) {
-      navigate('/signup', { state: { from: { pathname: '/verify-certificate' } }, replace: true });
+      navigate('/login', { state: { from: { pathname: '/verify-certificate' } }, replace: true });
     }
   }, [isAuthenticated, navigate]);
 

@@ -27,7 +27,7 @@ const Navbar = () => {
     { name: 'Internships', path: '/internships' },
     { 
       name: 'Verify Certificate', 
-      path: isAuthenticated ? '/verify-certificate' : '/signup',
+      path: isAuthenticated ? '/verify-certificate' : '/login',
       state: isAuthenticated ? null : { from: { pathname: '/verify-certificate' } }
     },
     { name: 'CivicSense AI', path: '/civicsense-ai' },

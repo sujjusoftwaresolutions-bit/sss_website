@@ -15,7 +15,7 @@ const ProtectedRoute = ({ requireAdmin }) => {
   }
 
   if (!isAuthenticated) {
-    return <Navigate to="/signup" state={{ from: location }} replace />;
+    return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
   if (requireAdmin && user.role !== 'admin') {

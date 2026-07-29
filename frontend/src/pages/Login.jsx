@@ -103,13 +103,6 @@ const Login = () => {
             {!loading && <ArrowRight className="w-5 h-5" />}
           </button>
         </form>
-
-        <p className="text-center mt-6 text-gray-400 text-sm">
-          Don't have an account?{' '}
-          <Link to="/signup" className="text-brand-gold hover:underline font-semibold">
-            Create an account
-          </Link>
-        </p>
       </div>
     </div>
   );
