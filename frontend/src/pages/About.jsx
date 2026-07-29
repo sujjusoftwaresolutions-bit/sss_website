@@ -28,65 +28,87 @@ const About = () => {
       />
 
       {/* Hero Section */}
-      <section className="relative pt-32 pb-24 bg-[#050B14] text-center text-white overflow-hidden">
+      <section className="relative pt-32 pb-24 bg-[#050B14] text-white overflow-hidden">
         <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1920&q=80')] bg-cover bg-center opacity-10 mix-blend-luminosity" />
         <div className="absolute inset-0 bg-gradient-to-t from-[#050B14] via-transparent to-[#050B14]" />
-        
-        <div className="relative z-10 max-w-4xl mx-auto px-6">
-          <motion.div 
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="relative mx-auto mb-10 flex justify-center"
-            style={{ width: 'clamp(180px, 20vw, 220px)' }}
-          >
+
+        <div className="relative z-10 max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center gap-12">
+
+          {/* Left — Logo + Text */}
+          <div className="flex-1 text-center md:text-left">
             <motion.div
-              animate={{ y: [0, -10, 0] }}
-              transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-              className="relative"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              className="mb-8 flex justify-center md:justify-start"
             >
-              <div 
-                className="absolute inset-0 rounded-3xl"
+              <div className="relative w-36">
+                <div
+                  className="absolute inset-0 rounded-3xl"
+                  style={{
+                    background: 'radial-gradient(circle, rgba(212,175,55,0.4) 0%, transparent 70%)',
+                    filter: 'blur(15px)',
+                  }}
+                />
+                <img
+                  src="/logo.jpeg"
+                  alt="SUJJU Software Solutions"
+                  className="relative z-10 w-full h-auto object-contain rounded-2xl"
+                  style={{ filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.3))' }}
+                />
+              </div>
+            </motion.div>
+            <motion.h1
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 font-outfit tracking-tight"
+            >
+              About{' '}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-gold to-brand-light-gold">
+                SUJJU Software Solutions
+              </span>
+            </motion.h1>
+            <motion.p
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="text-lg text-gray-300 font-inter leading-relaxed max-w-xl"
+            >
+              A modern software company dedicated to delivering innovative solutions while empowering the next generation of technologists through practical industry experience.
+            </motion.p>
+          </div>
+
+          {/* Right — Founder Photo */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.85, x: 40 }}
+            animate={{ opacity: 1, scale: 1, x: 0 }}
+            transition={{ duration: 0.9, delay: 0.15, type: 'spring', stiffness: 100 }}
+            className="flex-shrink-0 flex flex-col items-center gap-4"
+          >
+            {/* Glow ring */}
+            <div className="relative">
+              <div
+                className="absolute inset-0 rounded-full"
                 style={{
-                  background: 'radial-gradient(circle, rgba(212,175,55,0.4) 0%, transparent 70%)',
-                  filter: 'blur(15px)',
+                  background: 'radial-gradient(circle, rgba(212,175,55,0.5) 0%, transparent 70%)',
+                  filter: 'blur(22px)',
+                  transform: 'scale(1.25)',
                 }}
               />
-              <img 
-                src="/logo.jpeg" 
-                alt="SUJJU Software Solutions"
-                className="relative z-10 w-full h-auto object-contain rounded-2xl"
-                style={{ filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.3))' }}
+              <motion.img
+                src="/chinnu.jpeg"
+                alt="Chinnu – Founder, SUJJU Software Solutions"
+                animate={{ y: [0, -8, 0] }}
+                transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+                className="relative z-10 w-52 h-52 md:w-64 md:h-64 object-cover rounded-full border-4 border-brand-gold/50 shadow-[0_0_40px_rgba(212,175,55,0.35)]"
               />
-            </motion.div>
+            </div>
+            <p className="text-brand-gold font-bold font-outfit text-sm tracking-widest uppercase">Founder &amp; CEO</p>
           </motion.div>
-          <motion.h1 
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="text-5xl md:text-6xl font-bold mb-6 font-outfit tracking-tight"
-          >
-            About <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-gold to-brand-light-gold">SUJJU Software Solutions</span>
-          </motion.h1>
-          <motion.p 
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="text-xl text-gray-300 font-inter max-w-2xl mx-auto leading-relaxed"
-          >
-            A modern software company dedicated to delivering innovative solutions while empowering the next generation of technologists through practical industry experience.
-          </motion.p>
+
         </div>
       </section>
-
-        {/* Chinnu Portrait */}
-        <section className="py-12 flex justify-center items-center bg-[#050B14]">
-          <img
-            src="/chinnu.jpeg"
-            alt="Chinnu – Founder"
-            className="w-56 h-56 object-cover rounded-full border-4 border-brand-gold/30 shadow-[0_0_30px_rgba(212,175,55,0.4)]"
-          />
-        </section>
 
       {/* Mission & Vision */}
       <section className="py-24 max-w-7xl mx-auto px-6">
