@@ -185,7 +185,8 @@ const VerifyCertificate = () => {
 
                     {result.data.certificateURL && (
                       <a
-                        href={result.data.certificateURL}
+                        href={result.data.certificateURL.startsWith('http') ? result.data.certificateURL : `${API_BASE.replace('/api', '')}${result.data.certificateURL}`}
+                        download={`Certificate_${result.data.certificateId}.pdf`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex items-center gap-2 py-3 px-8 rounded-xl font-bold text-brand-navy"

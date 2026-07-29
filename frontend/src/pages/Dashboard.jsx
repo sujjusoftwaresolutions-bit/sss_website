@@ -5,6 +5,8 @@ import axios from 'axios';
 import { User, LogOut, Award, Search, CheckCircle2, Download, ExternalLink } from 'lucide-react';
 import SEO from '../components/SEO';
 
+const API_BASE = 'https://sss-website.onrender.com/api';
+
 const Dashboard = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
@@ -123,7 +125,8 @@ const Dashboard = () => {
                       </Link>
                       {cert.certificateURL && (
                         <a 
-                          href={cert.certificateURL}
+                          href={cert.certificateURL.startsWith('http') ? cert.certificateURL : `${API_BASE.replace('/api', '')}${cert.certificateURL}`}
+                          download={`Certificate_${cert.certificateId}.pdf`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="flex-1 flex items-center justify-center gap-1 py-2 px-3 rounded-lg bg-white/10 hover:bg-white/20 text-sm transition-colors"
