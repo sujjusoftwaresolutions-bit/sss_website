@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
 import { useLocation, Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
@@ -23,7 +25,11 @@ const Navbar = () => {
     { name: 'About', path: '/about' },
     { name: 'Services', path: '/services' },
     { name: 'Internships', path: '/internships' },
-    { name: 'Verify Certificate', path: '/verify-certificate' },
+    { 
+      name: 'Verify Certificate', 
+      path: isAuthenticated ? '/verify-certificate' : '/signup',
+      state: isAuthenticated ? null : { from: { pathname: '/verify-certificate' } }
+    },
     { name: 'CivicSense AI', path: '/civicsense-ai' },
     { name: 'Contact', path: '/contact' },
   ];
@@ -85,6 +91,7 @@ const Navbar = () => {
               <Link
                 key={link.name}
                 to={link.path}
+                state={link.state}
                 className={`relative font-outfit transition-colors duration-300 group ${
                   isActive ? 'text-white' : 'text-gray-300 hover:text-white'
                 }`}
@@ -179,9 +186,10 @@ const Navbar = () => {
                 >
                   <Link
                     to={link.path}
+                    state={link.state}
                     onClick={() => setMobileMenuOpen(false)}
                     className={`block font-outfit text-[32px] md:text-[40px] font-bold text-center transition-colors duration-200 ${
-                      location.pathname === link.path
+                      location.pathname === link.path || (link.name === 'Verify Certificate' && location.pathname === '/verify-certificate')
                         ? 'text-brand-gold'
                         : 'text-white hover:text-brand-gold'
                     }`}
