@@ -79,6 +79,15 @@ const About = () => {
         </div>
       </section>
 
+        {/* Chinnu Portrait */}
+        <section className="py-12 flex justify-center items-center bg-[#050B14]">
+          <img
+            src="/chinnu.jpeg"
+            alt="Chinnu – Founder"
+            className="w-56 h-56 object-cover rounded-full border-4 border-brand-gold/30 shadow-[0_0_30px_rgba(212,175,55,0.4)]"
+          />
+        </section>
+
       {/* Mission & Vision */}
       <section className="py-24 max-w-7xl mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
