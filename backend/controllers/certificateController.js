@@ -1,6 +1,7 @@
 const Certificate = require('../models/Certificate');
 const path = require('path');
 const fs = require('fs');
+const { uploadToCloudinary } = require('../middleware/uploadMiddleware');
 
 // @desc    Get certificate by ID — any logged-in user can verify
 // @route   GET /api/certificates/:id
@@ -14,9 +15,7 @@ const getCertificateById = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Certificate not found. Please check the ID and try again.' });
     }
 
-    // ── Ownership check ──────────────────────────────────────────────────────
-    // If certificate has a userId linked, only that user (or admin) can view it.
-    // If userId is null (admin-uploaded public cert), any logged-in user can view it.
+    // Ownership check — admin can see all, user can only see their own or public certs
     if (
       certificate.userId &&
       certificate.userId.toString() !== req.user.id &&
@@ -54,7 +53,7 @@ const getUserCertificates = async (req, res) => {
 const createCertificate = async (req, res) => {
   try {
     const { studentName, studentEmail, rollNumber, collegeName, department, year, course, duration, grade, issuedDate } = req.body;
-    
+
     // Generate a unique certificate ID if not provided
     let certId = req.body.certificateId;
     if (!certId) {
@@ -69,11 +68,15 @@ const createCertificate = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Certificate ID already exists' });
     }
 
-    // Handle uploaded file path
+    // Upload file to Cloudinary (permanent cloud storage)
     let certificateURL = '';
     if (req.file) {
-      // In production, this might be a full domain, but for simplicity we store the relative path
-      certificateURL = `/uploads/${req.file.filename}`;
+      try {
+        certificateURL = await uploadToCloudinary(req.file.buffer, req.file.originalname);
+      } catch (uploadErr) {
+        console.error('Cloudinary upload error:', uploadErr.message);
+        return res.status(500).json({ success: false, message: 'Failed to upload certificate file. Please check Cloudinary credentials.' });
+      }
     }
 
     const certificate = await Certificate.create({
@@ -102,7 +105,7 @@ const createCertificate = async (req, res) => {
   }
 };
 
-// @desc    Download certificate file (PDF, PNG, JPG, etc.)
+// @desc    Download certificate file from Cloudinary URL
 // @route   GET /api/certificates/download/:id
 // @access  Private
 const downloadCertificate = async (req, res) => {
@@ -114,15 +117,40 @@ const downloadCertificate = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Certificate file not found.' });
     }
 
-    // Resolve the local file path
-    const relativePath = certificate.certificateURL.replace(/^\/uploads\//, '');
+    const fileUrl = certificate.certificateURL;
+
+    // If stored as a Cloudinary URL (http/https), fetch and pipe it
+    if (fileUrl.startsWith('http')) {
+      const axios = require('axios');
+      const fileResponse = await axios.get(fileUrl, { responseType: 'arraybuffer' });
+
+      // Determine file extension from URL
+      const urlPath = new URL(fileUrl).pathname;
+      const ext = path.extname(urlPath).toLowerCase() || '.png';
+      const mimeTypes = {
+        '.pdf': 'application/pdf',
+        '.png': 'image/png',
+        '.jpg': 'image/jpeg',
+        '.jpeg': 'image/jpeg',
+        '.webp': 'image/webp',
+      };
+      const contentType = mimeTypes[ext] || 'application/octet-stream';
+      const downloadName = `Certificate_${certId}${ext}`;
+
+      res.setHeader('Content-Disposition', `attachment; filename="${downloadName}"`);
+      res.setHeader('Content-Type', contentType);
+      res.setHeader('Access-Control-Expose-Headers', 'Content-Disposition');
+      return res.send(Buffer.from(fileResponse.data));
+    }
+
+    // Legacy: local file path
+    const relativePath = fileUrl.replace(/^\/uploads\//, '');
     const filePath = path.join(__dirname, '..', 'uploads', relativePath);
 
     if (!fs.existsSync(filePath)) {
-      return res.status(404).json({ success: false, message: 'Certificate file missing on server.' });
+      return res.status(404).json({ success: false, message: 'Certificate file missing on server. Please re-upload.' });
     }
 
-    // Auto-detect content type and file extension
     const ext = path.extname(filePath).toLowerCase();
     const mimeTypes = {
       '.pdf': 'application/pdf',
@@ -134,15 +162,10 @@ const downloadCertificate = async (req, res) => {
     const contentType = mimeTypes[ext] || 'application/octet-stream';
     const downloadName = `Certificate_${certId}${ext}`;
 
-    // Force download with proper headers
     res.setHeader('Content-Disposition', `attachment; filename="${downloadName}"`);
     res.setHeader('Content-Type', contentType);
-    res.setHeader('Access-Control-Allow-Origin', 'https://sujjusoftwaresolutions.netlify.app');
-    res.setHeader('Access-Control-Allow-Credentials', 'true');
     res.setHeader('Access-Control-Expose-Headers', 'Content-Disposition');
-
-    const fileStream = fs.createReadStream(filePath);
-    fileStream.pipe(res);
+    fs.createReadStream(filePath).pipe(res);
   } catch (error) {
     console.error('Download certificate error:', error.message);
     res.status(500).json({ success: false, message: 'Server error during download.' });
