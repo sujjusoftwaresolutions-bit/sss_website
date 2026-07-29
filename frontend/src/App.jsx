@@ -16,6 +16,8 @@ const Internships = lazy(() => import('./pages/Internships'));
 const VerifyCertificate = lazy(() => import('./pages/VerifyCertificate'));
 const JoinNow = lazy(() => import('./pages/JoinNow'));
 const Login = lazy(() => import('./pages/Login'));
+const AdminSignup = lazy(() => import('./pages/AdminSignup'));
+const AdminDashboard = lazy(() => import('./pages/AdminDashboard'));
 
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 
@@ -34,6 +36,7 @@ function AnimatedRoutes() {
         <Route path="/internships" element={<Internships />} />
         <Route path="/join-now" element={<JoinNow />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/admin-signup" element={<AdminSignup />} />
 
 
         {/* Protected Routes */}
@@ -41,6 +44,11 @@ function AnimatedRoutes() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/verify-certificate" element={<VerifyCertificate />} />
           <Route path="/verify" element={<VerifyCertificate />} />
+        </Route>
+        
+        {/* Admin Only Routes */}
+        <Route element={<ProtectedRoute requireAdmin={true} />}>
+          <Route path="/admin-dashboard" element={<AdminDashboard />} />
         </Route>
       </Routes>
     </AnimatePresence>

@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express');
+const path = require('path');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -55,6 +56,9 @@ app.use('/api/contact', contactLimiter);
 // ─── Body Parsing ──────────────────────────────────────────────────────────────
 app.use(express.json({ limit: '10kb' })); // Prevent large payload attacks
 app.use(express.urlencoded({ extended: true, limit: '10kb' }));
+
+// ─── Static Files ──────────────────────────────────────────────────────────────
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // ─── MongoDB Connection ────────────────────────────────────────────────────────
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/sujju_software')

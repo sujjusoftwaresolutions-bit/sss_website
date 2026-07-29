@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
 import { Mail, Lock, ArrowRight, ShieldCheck } from 'lucide-react';
@@ -24,7 +24,11 @@ const Login = () => {
       const response = await axios.post('/auth/login', { loginId, password });
       if (response.data.success) {
         login(response.data.token, response.data.user);
-        navigate(from, { replace: true });
+        if (response.data.user.role === 'admin') {
+          navigate('/admin-dashboard', { replace: true });
+        } else {
+          navigate(from, { replace: true });
+        }
       }
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed. Please try again.');
@@ -55,6 +59,12 @@ const Login = () => {
         {error && (
           <div className="bg-red-500/10 border border-red-500/50 text-red-500 p-3 rounded-xl mb-6 text-sm text-center">
             {error}
+          </div>
+        )}
+        
+        {location.state?.message && !error && (
+          <div className="bg-green-500/10 border border-green-500/50 text-green-400 p-3 rounded-xl mb-6 text-sm text-center">
+            {location.state.message}
           </div>
         )}
 

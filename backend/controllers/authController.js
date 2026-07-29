@@ -99,6 +99,45 @@ const registerUser = async (req, res) => {
   }
 };
 
+// ── Register Admin ─────────────────────────────────────────────────────────────
+const registerAdmin = async (req, res) => {
+  try {
+    const { fullName, email, phone, password } = req.body;
+
+    const userExists = await User.findOne({ $or: [{ email }, { phone }] });
+    if (userExists) {
+      return res.status(400).json({ success: false, message: 'Admin with this email or phone already exists' });
+    }
+
+    const admin = await User.create({
+      fullName,
+      email,
+      phone,
+      password,
+      role: 'admin',
+      emailVerified: true, // Admins auto-verified
+      phoneVerified: true,
+      collegeName: 'SUJJU Software Solutions',
+      rollNumber: 'ADMIN',
+      department: 'Management',
+      year: 'Admin',
+    });
+
+    if (admin) {
+      res.status(201).json({
+        success: true,
+        message: 'Admin registration successful. You can now login.',
+        userId: admin._id,
+      });
+    } else {
+      res.status(400).json({ success: false, message: 'Invalid admin data' });
+    }
+  } catch (error) {
+    console.error('Admin registration error:', error.message, error.stack);
+    res.status(500).json({ success: false, message: `Server error during admin registration: ${error.message}` });
+  }
+};
+
 // ── Verify OTP ─────────────────────────────────────────────────────────────────
 const verifyOTP = async (req, res) => {
   try {
@@ -198,4 +237,4 @@ const getProfile = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, verifyOTP, loginUser, getProfile };
+module.exports = { registerUser, registerAdmin, verifyOTP, loginUser, getProfile };
