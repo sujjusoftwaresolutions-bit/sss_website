@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, ShieldCheck, AlertCircle, Loader2, User, Lock, LogIn } from 'lucide-react';
+import { Search, ShieldCheck, AlertCircle, Loader2 } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
@@ -13,6 +13,14 @@ const VerifyCertificate = () => {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const { isAuthenticated, user } = useAuth();
+  const navigate = useNavigate();
+
+  // Redirect to signup if not authenticated
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate('/signup', { state: { from: { pathname: '/verify-certificate' } }, replace: true });
+    }
+  }, [isAuthenticated, navigate]);
 
   const handleVerify = async (e) => {
     e.preventDefault();
@@ -81,40 +89,8 @@ const VerifyCertificate = () => {
           </motion.p>
         </div>
 
-        {/* Show login prompt if NOT authenticated */}
-        {!isAuthenticated ? (
-          <motion.div
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.3 }}
-            className="w-full bg-white/5 border border-white/10 rounded-2xl p-8 md:p-12 backdrop-blur-sm text-center"
-          >
-            <ShieldCheck className="w-16 h-16 text-brand-gold mx-auto mb-4 opacity-50" />
-            <h2 className="text-2xl font-bold font-outfit text-white mb-2">Login Required</h2>
-            <p className="text-gray-400 mb-8 max-w-md mx-auto">
-              To verify and view certificates, you must be logged in. Create an account if you don't have one.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link
-                to="/signup"
-                state={{ from: { pathname: '/verify-certificate' } }}
-                className="flex items-center justify-center gap-2 py-3 px-8 rounded-xl font-bold text-brand-navy shadow-[0_4px_15px_rgba(212,175,55,0.3)] hover:scale-[1.02] transition-all"
-                style={{ background: 'linear-gradient(135deg, #F4C542 0%, #D4AF37 100%)' }}
-              >
-                <User className="w-5 h-5" />
-                Create Account
-              </Link>
-              <Link
-                to="/login"
-                state={{ from: { pathname: '/verify-certificate' } }}
-                className="flex items-center justify-center gap-2 py-3 px-8 rounded-xl font-bold text-white border border-white/20 hover:bg-white/5 hover:scale-[1.02] transition-all"
-              >
-                <LogIn className="w-5 h-5" />
-                Login
-              </Link>
-            </div>
-          </motion.div>
-        ) : (
+        {/* Authenticated content only — non-authenticated users are redirected via useEffect */}
+        {isAuthenticated && (
           <>
             {/* Verification Form */}
             <motion.div
