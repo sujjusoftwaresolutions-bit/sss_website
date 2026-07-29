@@ -102,7 +102,7 @@ const createCertificate = async (req, res) => {
   }
 };
 
-// @desc    Download certificate PDF
+// @desc    Download certificate file (PDF, PNG, JPG, etc.)
 // @route   GET /api/certificates/download/:id
 // @access  Private
 const downloadCertificate = async (req, res) => {
@@ -122,10 +122,23 @@ const downloadCertificate = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Certificate file missing on server.' });
     }
 
+    // Auto-detect content type and file extension
+    const ext = path.extname(filePath).toLowerCase();
+    const mimeTypes = {
+      '.pdf': 'application/pdf',
+      '.png': 'image/png',
+      '.jpg': 'image/jpeg',
+      '.jpeg': 'image/jpeg',
+      '.webp': 'image/webp',
+    };
+    const contentType = mimeTypes[ext] || 'application/octet-stream';
+    const downloadName = `Certificate_${certId}${ext}`;
+
     // Force download with proper headers
-    res.setHeader('Content-Disposition', `attachment; filename="Certificate_${certId}.pdf"`);
-    res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Content-Disposition', `attachment; filename="${downloadName}"`);
+    res.setHeader('Content-Type', contentType);
+    res.setHeader('Access-Control-Allow-Origin', 'https://sujjusoftwaresolutions.netlify.app');
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
     res.setHeader('Access-Control-Expose-Headers', 'Content-Disposition');
 
     const fileStream = fs.createReadStream(filePath);

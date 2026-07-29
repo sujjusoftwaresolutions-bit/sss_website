@@ -11,6 +11,7 @@ const API_BASE = 'https://sss-website.onrender.com/api';
 const VerifyCertificate = () => {
   const [certId, setCertId] = useState('');
   const [loading, setLoading] = useState(false);
+  const [downloadLoading, setDownloadLoading] = useState(false);
   const [result, setResult] = useState(null);
   const { isAuthenticated, user } = useAuth();
   const navigate = useNavigate();
@@ -46,6 +47,7 @@ const VerifyCertificate = () => {
   };
 
   const handleDownload = async (certId) => {
+    setDownloadLoading(true);
     try {
       const token = localStorage.getItem('token');
       const response = await fetch(`${API_BASE}/certificates/download/${certId}`, {
@@ -53,16 +55,31 @@ const VerifyCertificate = () => {
       });
 
       if (!response.ok) {
-        const err = await response.json();
-        alert(err.message || 'Download failed. Please try again.');
+        let errMsg = 'Download failed. Please try again.';
+        try { const err = await response.json(); errMsg = err.message || errMsg; } catch(e) {}
+        alert(errMsg);
         return;
+      }
+
+      // Get filename from Content-Disposition or build from certId
+      const disposition = response.headers.get('Content-Disposition');
+      let filename = `Certificate_${certId}`;
+      if (disposition) {
+        const match = disposition.match(/filename="?([^"]+)"?/);
+        if (match) filename = match[1];
+      } else {
+        // Fallback: detect from blob type
+        const contentType = response.headers.get('Content-Type') || '';
+        if (contentType.includes('png')) filename += '.png';
+        else if (contentType.includes('jpeg') || contentType.includes('jpg')) filename += '.jpg';
+        else filename += '.pdf';
       }
 
       const blob = await response.blob();
       const blobUrl = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = blobUrl;
-      link.download = `Certificate_${certId}.pdf`;
+      link.download = filename;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -70,6 +87,8 @@ const VerifyCertificate = () => {
     } catch (error) {
       console.error('Download failed:', error);
       alert('Download failed. Please try again.');
+    } finally {
+      setDownloadLoading(false);
     }
   };
 
@@ -214,10 +233,15 @@ const VerifyCertificate = () => {
                     {result.data.certificateURL && (
                       <button
                         onClick={() => handleDownload(result.data.certificateId)}
-                        className="flex items-center gap-2 py-3 px-8 rounded-xl font-bold text-brand-navy"
+                        disabled={downloadLoading}
+                        className="flex items-center gap-2 py-3 px-8 rounded-xl font-bold text-brand-navy disabled:opacity-70"
                         style={{ background: 'linear-gradient(135deg, #F4C542 0%, #D4AF37 100%)' }}
                       >
-                        Download Certificate PDF
+                        {downloadLoading ? (
+                          <><Loader2 className="w-5 h-5 animate-spin" /> Downloading...</>
+                        ) : (
+                          'Download Certificate'
+                        )}
                       </button>
                     )}
 
