@@ -29,24 +29,31 @@ const Dashboard = () => {
     fetchCertificates();
   }, []);
 
-  const handleDownload = async (url, filename) => {
+  const handleDownload = async (certId) => {
     try {
-      const fullUrl = url.startsWith('http') ? url : `${API_BASE.replace('/api', '')}${url}`;
-      const response = await fetch(fullUrl);
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${API_BASE}/certificates/download/${certId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (!response.ok) {
+        const err = await response.json();
+        alert(err.message || 'Download failed. Please try again.');
+        return;
+      }
+
       const blob = await response.blob();
       const blobUrl = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = blobUrl;
-      link.download = filename;
+      link.download = `Certificate_${certId}.pdf`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
       window.URL.revokeObjectURL(blobUrl);
     } catch (error) {
       console.error('Download failed:', error);
-      alert('Failed to download the certificate. It might be opening in a new tab.');
-      const fullUrl = url.startsWith('http') ? url : `${API_BASE.replace('/api', '')}${url}`;
-      window.open(fullUrl, '_blank');
+      alert('Download failed. Please try again.');
     }
   };
 
@@ -146,7 +153,7 @@ const Dashboard = () => {
                       </Link>
                       {cert.certificateURL && (
                         <button
-                          onClick={() => handleDownload(cert.certificateURL, `Certificate_${cert.certificateId}.pdf`)}
+                          onClick={() => handleDownload(cert.certificateId)}
                           className="flex-1 flex items-center justify-center gap-1 py-2 px-3 rounded-lg bg-white/10 hover:bg-white/20 text-sm transition-colors"
                         >
                           <Download className="w-4 h-4" /> PDF

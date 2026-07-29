@@ -45,24 +45,31 @@ const VerifyCertificate = () => {
     }
   };
 
-  const handleDownload = async (url, filename) => {
+  const handleDownload = async (certId) => {
     try {
-      const fullUrl = url.startsWith('http') ? url : `${API_BASE.replace('/api', '')}${url}`;
-      const response = await fetch(fullUrl);
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${API_BASE}/certificates/download/${certId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (!response.ok) {
+        const err = await response.json();
+        alert(err.message || 'Download failed. Please try again.');
+        return;
+      }
+
       const blob = await response.blob();
       const blobUrl = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = blobUrl;
-      link.download = filename;
+      link.download = `Certificate_${certId}.pdf`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
       window.URL.revokeObjectURL(blobUrl);
     } catch (error) {
       console.error('Download failed:', error);
-      alert('Failed to download the certificate. It might be opening in a new tab.');
-      const fullUrl = url.startsWith('http') ? url : `${API_BASE.replace('/api', '')}${url}`;
-      window.open(fullUrl, '_blank');
+      alert('Download failed. Please try again.');
     }
   };
 
@@ -206,7 +213,7 @@ const VerifyCertificate = () => {
 
                     {result.data.certificateURL && (
                       <button
-                        onClick={() => handleDownload(result.data.certificateURL, `Certificate_${result.data.certificateId}.pdf`)}
+                        onClick={() => handleDownload(result.data.certificateId)}
                         className="flex items-center gap-2 py-3 px-8 rounded-xl font-bold text-brand-navy"
                         style={{ background: 'linear-gradient(135deg, #F4C542 0%, #D4AF37 100%)' }}
                       >

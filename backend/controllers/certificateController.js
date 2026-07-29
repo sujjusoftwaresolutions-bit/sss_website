@@ -1,4 +1,6 @@
 const Certificate = require('../models/Certificate');
+const path = require('path');
+const fs = require('fs');
 
 // @desc    Get certificate by ID — any logged-in user can verify
 // @route   GET /api/certificates/:id
@@ -100,4 +102,38 @@ const createCertificate = async (req, res) => {
   }
 };
 
-module.exports = { getCertificateById, getUserCertificates, createCertificate };
+// @desc    Download certificate PDF
+// @route   GET /api/certificates/download/:id
+// @access  Private
+const downloadCertificate = async (req, res) => {
+  try {
+    const certId = req.params.id;
+    const certificate = await Certificate.findOne({ certificateId: certId });
+
+    if (!certificate || !certificate.certificateURL) {
+      return res.status(404).json({ success: false, message: 'Certificate file not found.' });
+    }
+
+    // Resolve the local file path
+    const relativePath = certificate.certificateURL.replace(/^\/uploads\//, '');
+    const filePath = path.join(__dirname, '..', 'uploads', relativePath);
+
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({ success: false, message: 'Certificate file missing on server.' });
+    }
+
+    // Force download with proper headers
+    res.setHeader('Content-Disposition', `attachment; filename="Certificate_${certId}.pdf"`);
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Expose-Headers', 'Content-Disposition');
+
+    const fileStream = fs.createReadStream(filePath);
+    fileStream.pipe(res);
+  } catch (error) {
+    console.error('Download certificate error:', error.message);
+    res.status(500).json({ success: false, message: 'Server error during download.' });
+  }
+};
+
+module.exports = { getCertificateById, getUserCertificates, createCertificate, downloadCertificate };
