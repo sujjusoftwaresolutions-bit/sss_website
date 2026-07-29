@@ -29,6 +29,27 @@ const Dashboard = () => {
     fetchCertificates();
   }, []);
 
+  const handleDownload = async (url, filename) => {
+    try {
+      const fullUrl = url.startsWith('http') ? url : `${API_BASE.replace('/api', '')}${url}`;
+      const response = await fetch(fullUrl);
+      const blob = await response.blob();
+      const blobUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(blobUrl);
+    } catch (error) {
+      console.error('Download failed:', error);
+      alert('Failed to download the certificate. It might be opening in a new tab.');
+      const fullUrl = url.startsWith('http') ? url : `${API_BASE.replace('/api', '')}${url}`;
+      window.open(fullUrl, '_blank');
+    }
+  };
+
   const handleLogout = () => {
     logout();
     navigate('/login');
@@ -124,15 +145,12 @@ const Dashboard = () => {
                         <ExternalLink className="w-4 h-4" /> View
                       </Link>
                       {cert.certificateURL && (
-                        <a 
-                          href={cert.certificateURL.startsWith('http') ? cert.certificateURL : `${API_BASE.replace('/api', '')}${cert.certificateURL}`}
-                          download={`Certificate_${cert.certificateId}.pdf`}
-                          target="_blank"
-                          rel="noopener noreferrer"
+                        <button
+                          onClick={() => handleDownload(cert.certificateURL, `Certificate_${cert.certificateId}.pdf`)}
                           className="flex-1 flex items-center justify-center gap-1 py-2 px-3 rounded-lg bg-white/10 hover:bg-white/20 text-sm transition-colors"
                         >
                           <Download className="w-4 h-4" /> PDF
-                        </a>
+                        </button>
                       )}
                     </div>
                   </div>
