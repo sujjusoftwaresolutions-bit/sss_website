@@ -31,8 +31,8 @@ app.use(cors({
       callback(new Error('Not allowed by CORS'));
     }
   },
-  methods: ['GET', 'POST'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
 }));
 
 // ─── Rate Limiting ─────────────────────────────────────────────────────────────
@@ -74,6 +74,7 @@ app.use('/api/services', require('./routes/serviceRoutes'));
 app.use('/api/gallery', require('./routes/galleryRoutes'));
 app.use('/api/certificates', require('./routes/certificateRoutes'));
 app.use('/api/auth', require('./routes/authRoutes'));
+app.use('/api/ai', require('./routes/aiRoutes'));
 app.use('/ai', require('./routes/aiRoutes'));
 
 // ─── Root Route ───────────────────────────────────────────────────────────────
