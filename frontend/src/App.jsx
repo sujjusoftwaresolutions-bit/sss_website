@@ -50,6 +50,9 @@ function AnimatedRoutes() {
         <Route element={<ProtectedRoute requireAdmin={true} />}>
           <Route path="/admin-dashboard" element={<AdminDashboard />} />
         </Route>
+
+        {/* Catch-all Fallback Route */}
+        <Route path="*" element={<Home />} />
       </Routes>
     </AnimatePresence>
   );
