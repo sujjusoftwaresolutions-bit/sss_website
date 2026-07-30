@@ -1,7 +1,7 @@
 const express = require('express');
 const { getCertificateById, getUserCertificates, createCertificate, downloadCertificate } = require('../controllers/certificateController');
 const { protect, admin } = require('../middleware/authMiddleware');
-const upload = require('../middleware/uploadMiddleware');
+const { upload } = require('../middleware/uploadMiddleware');
 
 const router = express.Router();
 
