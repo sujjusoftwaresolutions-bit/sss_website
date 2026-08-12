@@ -94,7 +94,7 @@ const submitContactForm = async (req, res) => {
               <p style="margin: 0; line-height: 1.8; color: #374151; background: #f8fafc; padding: 16px; border-radius: 8px; border-left: 4px solid #D4AF37;">${cleanMessage}</p>
             </div>
             <div style="background: #F8FAFC; padding: 16px 24px; font-size: 12px; color: #94a3b8; text-align: center;">
-              Submitted via the contact form on <strong>sujjusoftwaresolutions.netlify.app</strong> · ${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })} IST
+              Submitted via the contact form on <strong>${(process.env.FRONTEND_URL || 'https://sujjusoftware.com').replace(/^https?:\/\//, '')}</strong> · ${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })} IST
             </div>
           </div>
         `,
@@ -117,7 +117,7 @@ const submitContactForm = async (req, res) => {
                 Thank you for reaching out to <strong>SUJJU Software Solutions</strong>. Our team has received your enquiry regarding <em>"${cleanSubject}"</em> and we will get back to you as soon as possible.
               </p>
               <p style="margin: 0; color: #374151; line-height: 1.7;">
-                In the meantime, feel free to explore our services at <a href="https://sujjusoftwaresolutions.netlify.app" style="color: #D4AF37;">sujjusoftwaresolutions.netlify.app</a>.
+                In the meantime, feel free to explore our services at <a href="${process.env.FRONTEND_URL || 'https://sujjusoftware.com'}" style="color: #D4AF37;">${(process.env.FRONTEND_URL || 'https://sujjusoftware.com').replace(/^https?:\/\//, '')}</a>.
               </p>
             </div>
             <div style="background: #F8FAFC; padding: 16px 24px; font-size: 12px; color: #94a3b8; text-align: center;">

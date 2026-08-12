@@ -5,43 +5,79 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
+const mongoSanitize = require('express-mongo-sanitize');
+const hpp = require('hpp');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// ─── Security Middleware ───────────────────────────────────────────────────────
-app.use(helmet()); // Sets secure HTTP headers
+// ─── Disable X-Powered-By Header ──────────────────────────────────────────────
+app.disable('x-powered-by');
 
+// ─── Enterprise High-Security HTTP Headers (Helmet) ───────────────────────────
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
+        styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
+        fontSrc: ["'self'", 'https://fonts.gstatic.com', 'data:'],
+        imgSrc: ["'self'", 'data:', 'blob:', 'https://res.cloudinary.com', 'https://images.unsplash.com'],
+        connectSrc: ["'self'", 'https://api.cloudinary.com', 'https://*.mongodb.net'],
+        frameSrc: ["'none'"],
+        objectSrc: ["'none'"],
+        upgradeInsecureRequests: [],
+      },
+    },
+    crossOriginEmbedderPolicy: false,
+    hsts: {
+      maxAge: 31536000, // 1 year
+      includeSubDomains: true,
+      preload: true,
+    },
+    referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
+  })
+);
 
-// CORS — only allow the frontend origin
+// ─── Dynamic CORS (Strict Origin Whitelist - No Netlify) ──────────────────────
 const allowedOrigins = [
-  process.env.FRONTEND_URL || 'http://localhost:5173',
+  process.env.FRONTEND_URL,
   'http://localhost:5173',
+  'http://localhost:3000',
   'https://sujjusoftware.com',
   'https://www.sujjusoftware.com',
-  'https://sujjusoftwaresolutions.netlify.app',
-  'https://www.sujjusoftwaresolutions.netlify.app',
-];
+].filter(Boolean);
+
 app.use(cors({
   origin: (origin, callback) => {
-    // Allow requests with no origin (Postman, curl) in development
+    // Allow non-browser calls (like curl, mobile app) in dev mode or whitelisted origins
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      callback(new Error('Not allowed by CORS'));
+      callback(new Error('Access Denied: CORS policy restricts this request.'));
     }
   },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+  credentials: true,
 }));
 
-// ─── Rate Limiting ─────────────────────────────────────────────────────────────
+// ─── Rate Limiting (DDoS & Brute-Force Shield) ───────────────────────────────
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100,
+  max: 150,
   standardHeaders: true,
   legacyHeaders: false,
   message: { success: false, message: 'Too many requests. Please try again after 15 minutes.' },
+});
+
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5, // Strict 5 failed login/register attempts per 15 mins
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { success: false, message: 'Too many login attempts. Account temporarily locked for 15 minutes.' },
 });
 
 const contactLimiter = rateLimit({
@@ -51,11 +87,19 @@ const contactLimiter = rateLimit({
 });
 
 app.use('/api/', apiLimiter);
+app.use('/api/auth/login', authLimiter);
+app.use('/api/auth/register', authLimiter);
 app.use('/api/contact', contactLimiter);
 
-// ─── Body Parsing ──────────────────────────────────────────────────────────────
-app.use(express.json({ limit: '10kb' })); // Prevent large payload attacks
+// ─── Body Parsing & Data Sanitization ──────────────────────────────────────────
+app.use(express.json({ limit: '10kb' })); // Prevent large payload flooding
 app.use(express.urlencoded({ extended: true, limit: '10kb' }));
+
+// Prevent NoSQL Query Injection ($gt, $ne, etc.)
+app.use(mongoSanitize({ replaceWith: '_' }));
+
+// Protect against HTTP Parameter Pollution (HPP)
+app.use(hpp());
 
 // ─── Static Files ──────────────────────────────────────────────────────────────
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
@@ -120,3 +164,6 @@ app.use((err, req, res, next) => {
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT} [${process.env.NODE_ENV || 'development'}]`);
 });
+
+module.exports = app;
+

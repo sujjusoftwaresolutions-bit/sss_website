@@ -1,0 +1,84 @@
+# ==============================================================================
+# SUJJU SOFTWARE SOLUTIONS - Enterprise High-Security Apache Configuration (.htaccess)
+# Designed for Namecheap Shared / cPanel / VPS Hosting
+# ==============================================================================
+
+# 1. Disable Directory Index Browsing (Security Hardening)
+Options -Indexes -MultiViews
+
+# 2. Block Access to Sensitive Files (.env, .git, config, package files)
+<FilesMatch "^\.env|^\.git|^\.htaccess|package(-lock)?\.json|README\.md|passenger\.js">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+    </IfModule>
+</FilesMatch>
+
+# 3. Security Rewrite Engine & Injection Protection
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # 3.1 Force HTTPS Security (Redirect HTTP to HTTPS)
+  RewriteCond %{HTTPS} off
+  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+  # 3.2 Block Malicious Query Parameters (SQLi, XSS, Path Traversal)
+  RewriteCond %{QUERY_STRING} (eval\(|base64_encode|GLOBALS|REQUEST|SELECT|INSERT|DELETE|DROP|UNION|UPDATE|<script|<object|<iframe|\.\.\/) [NC]
+  RewriteRule ^ - [F,L]
+
+  # 3.3 React SPA Client-Side Routing Fallback
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_URI} !^/api/
+  RewriteRule ^ index.html [L]
+</IfModule>
+
+# 4. Enterprise Security HTTP Headers
+<IfModule mod_headers.c>
+  # Enforce SSL HSTS for 1 Year
+  Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+  
+  # Prevent MIME Sniffing Attacks
+  Header set X-Content-Type-Options "nosniff"
+  
+  # Prevent Clickjacking / Framing
+  Header set X-Frame-Options "SAMEORIGIN"
+  
+  # Legacy XSS Filter Protection
+  Header set X-XSS-Protection "1; mode=block"
+  
+  # Referrer Data Leak Prevention
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+  
+  # Disable Unnecessary Browser Features (Permissions Policy)
+  Header set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=()"
+  
+  # Remove Server Fingerprints
+  Header unset X-Powered-By
+  Header unset Server
+</IfModule>
+
+# 5. Gzip Compression for Ultra-Fast Page Loads
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json application/xml
+</IfModule>
+
+# 6. Optimized Static Asset Caching
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType image/jpg "access plus 1 year"
+  ExpiresByType image/jpeg "access plus 1 year"
+  ExpiresByType image/gif "access plus 1 year"
+  ExpiresByType image/png "access plus 1 year"
+  ExpiresByType image/svg+xml "access plus 1 year"
+  ExpiresByType text/css "access plus 1 month"
+  ExpiresByType application/pdf "access plus 1 month"
+  ExpiresByType text/x-javascript "access plus 1 month"
+  ExpiresByType application/x-javascript "access plus 1 month"
+  ExpiresByType image/x-icon "access plus 1 year"
+  ExpiresDefault "access plus 2 days"
+</IfModule>
