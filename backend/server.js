@@ -95,8 +95,8 @@ app.use('/api/contact', contactLimiter);
 app.use(express.json({ limit: '10kb' })); // Prevent large payload flooding
 app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 
-// Prevent NoSQL Query Injection ($gt, $ne, etc.)
-app.use(mongoSanitize({ replaceWith: '_' }));
+// Prevent NoSQL Query Injection ($gt, $ne, etc.) - commented out due to incompatibility with Express 5
+// app.use(mongoSanitize({ replaceWith: '_' }));
 
 // Protect against HTTP Parameter Pollution (HPP)
 app.use(hpp());

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { User, Mail, Phone, Lock, GraduationCap, Building, Calendar, ArrowRight, AlertCircle } from 'lucide-react';
 import SEO from '../components/SEO';
@@ -21,6 +21,7 @@ const Signup = () => {
   const [registrationData, setRegistrationData] = useState(null);
   
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -74,6 +75,7 @@ const Signup = () => {
             phone: formData.phone,
             emailOtp: response.data.debug_emailOtp,
             phoneOtp: response.data.debug_phoneOtp,
+            from: location.state?.from,
           }
         });
       }

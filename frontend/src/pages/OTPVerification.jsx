@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { Mail, Phone, ShieldCheck, ArrowRight, AlertCircle, CheckCircle } from 'lucide-react';
 import SEO from '../components/SEO';
+import { useAuth } from '../context/AuthContext';
 
 const OTPVerification = () => {
   const [emailOtp, setEmailOtp] = useState('');
@@ -13,7 +14,8 @@ const OTPVerification = () => {
   
   const navigate = useNavigate();
   const location = useLocation();
-  const { userId, email, phone, emailOtp: debugEmailOtp, phoneOtp: debugPhoneOtp } = location.state || {};
+  const { login } = useAuth();
+  const { userId, email, phone, emailOtp: debugEmailOtp, phoneOtp: debugPhoneOtp, from } = location.state || {};
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -30,13 +32,13 @@ const OTPVerification = () => {
 
       if (response.data.success) {
         setSuccess(true);
-        // Store token and user data
-        localStorage.setItem('token', response.data.token);
-        localStorage.setItem('user', JSON.stringify(response.data.user));
+        // Store token and user data in AuthContext
+        login(response.data.token, response.data.user);
         
-        // Redirect to verify certificate after a short delay
+        // Redirect to verify certificate (or previous page) after a short delay
+        const redirectPath = from?.pathname || '/verify-certificate';
         setTimeout(() => {
-          navigate('/verify-certificate', { replace: true });
+          navigate(redirectPath, { replace: true });
         }, 1500);
       }
     } catch (err) {

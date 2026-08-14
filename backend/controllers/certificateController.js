@@ -15,6 +15,14 @@ const getCertificateById = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Certificate not found. Please check the ID and try again.' });
     }
 
+    // Require verified email and phone OTP
+    if (!req.user.emailVerified || !req.user.phoneVerified) {
+      return res.status(403).json({
+        success: false,
+        message: 'Access Denied: Please verify your email and phone number via OTP first.',
+      });
+    }
+
     // Ownership check — admin can see all, user can only see their own or public certs
     if (
       certificate.userId &&
@@ -115,6 +123,14 @@ const downloadCertificate = async (req, res) => {
 
     if (!certificate || !certificate.certificateURL) {
       return res.status(404).json({ success: false, message: 'Certificate file not found.' });
+    }
+
+    // Require verified email and phone OTP
+    if (!req.user.emailVerified || !req.user.phoneVerified) {
+      return res.status(403).json({
+        success: false,
+        message: 'Access Denied: Please verify your email and phone number via OTP first.',
+      });
     }
 
     const fileUrl = certificate.certificateURL;
