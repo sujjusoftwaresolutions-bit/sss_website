@@ -112,6 +112,13 @@ const Login = () => {
             {loading ? 'Authenticating...' : 'Sign In'}
             {!loading && <ArrowRight className="w-5 h-5" />}
           </button>
+
+          <p className="text-center text-gray-400 mt-6">
+            Don't have an account?{' '}
+            <Link to="/signup" className="text-brand-gold hover:underline font-medium">
+              Sign Up
+            </Link>
+          </p>
         </form>
       </div>
     </div>

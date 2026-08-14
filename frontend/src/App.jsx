@@ -16,6 +16,8 @@ const Internships = lazy(() => import('./pages/Internships'));
 const VerifyCertificate = lazy(() => import('./pages/VerifyCertificate'));
 const JoinNow = lazy(() => import('./pages/JoinNow'));
 const Login = lazy(() => import('./pages/Login'));
+const Signup = lazy(() => import('./pages/Signup'));
+const OTPVerification = lazy(() => import('./pages/OTPVerification'));
 const AdminSignup = lazy(() => import('./pages/AdminSignup'));
 const AdminDashboard = lazy(() => import('./pages/AdminDashboard'));
 
@@ -36,6 +38,8 @@ function AnimatedRoutes() {
         <Route path="/internships" element={<Internships />} />
         <Route path="/join-now" element={<JoinNow />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/verify-otp" element={<OTPVerification />} />
         <Route path="/admin-signup" element={<AdminSignup />} />
 
 
