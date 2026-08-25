@@ -74,7 +74,7 @@ const Internships = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="min-h-screen bg-[#050B14] pt-[120px] pb-24 px-4 md:px-8"
+      className="min-h-screen bg-transparent pt-[120px] pb-24 px-4 md:px-8"
     >
       <SEO 
         title="Internships | SUJJU Software Solutions"

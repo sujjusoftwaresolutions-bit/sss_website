@@ -97,7 +97,7 @@ const VerifyCertificate = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="min-h-screen bg-[#050B14] pt-[120px] pb-24 px-4 md:px-8 flex flex-col items-center"
+      className="min-h-screen bg-transparent pt-[120px] pb-24 px-4 md:px-8 flex flex-col items-center"
     >
       <SEO
         title="Verify Certificate | SUJJU Software Solutions"

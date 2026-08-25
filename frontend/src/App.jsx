@@ -5,8 +5,6 @@ import MainLayout from './layouts/MainLayout';
 import LoadingScreen from './components/LoadingScreen';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
-import * as THREE from 'three';
-import { useEffect, useRef } from 'react';
 
 // Lazy load pages for performance
 const Home = lazy(() => import('./pages/Home'));
@@ -65,49 +63,11 @@ function AnimatedRoutes() {
 }
 
 function App() {
-  const canvasRef = useRef(null);
-
-  // Initialize Three.js scene on mount
-  useEffect(() => {
-    if (!canvasRef.current) return;
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.z = 5;
-    const renderer = new THREE.WebGLRenderer({ canvas: canvasRef.current, antialias: true, alpha: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-
-    // Simple rotating cube (replace with GLTF model later)
-    const geometry = new THREE.BoxGeometry(1, 1, 1);
-    const material = new THREE.MeshNormalMaterial();
-    const cube = new THREE.Mesh(geometry, material);
-    scene.add(cube);
-
-    const animate = () => {
-      cube.rotation.x += 0.01;
-      cube.rotation.y += 0.01;
-      renderer.render(scene, camera);
-      requestAnimationFrame(animate);
-    };
-    animate();
-
-    const handleResize = () => {
-      const width = window.innerWidth;
-      const height = window.innerHeight;
-      renderer.setSize(width, height);
-      camera.aspect = width / height;
-      camera.updateProjectionMatrix();
-    };
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
   return (
     <Router>
       <AuthProvider>
         <Suspense fallback={<LoadingScreen />}> 
           <MainLayout>
-            {/* 3D canvas filling the viewport */}
-            <canvas ref={canvasRef} style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }} />
             <AnimatedRoutes />
           </MainLayout>
         </Suspense>

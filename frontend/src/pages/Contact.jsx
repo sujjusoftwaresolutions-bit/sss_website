@@ -33,7 +33,7 @@ const Contact = () => {
   };
 
   return (
-    <div className="w-full bg-brand-bg relative overflow-hidden">
+    <div className="w-full bg-transparent relative overflow-hidden">
       <SEO 
         title="Contact Us" 
         description="Get in touch with SUJJU Software Solutions. We are here to help you transform your ideas into intelligent digital solutions." 

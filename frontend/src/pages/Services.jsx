@@ -37,7 +37,7 @@ const Services = () => {
   }, []);
 
   return (
-    <div className="w-full bg-[#050B14] relative overflow-hidden">
+    <div className="w-full bg-transparent relative overflow-hidden">
       <SEO 
         title="Our Services" 
         description="Explore the premium software development, AI solutions, and technical training services offered by SUJJU Software Solutions." 
