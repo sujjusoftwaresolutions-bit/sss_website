@@ -9,15 +9,19 @@ const { uploadToCloudinary } = require('../middleware/uploadMiddleware');
 const getCertificateById = async (req, res) => {
   try {
     const rawId = req.params.id.trim();
-    const escaped = rawId.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const escapedRaw = rawId.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    
+    // Replace hyphens, underscores, or spaces with a flexible regex pattern [-_\s]?
+    const flexiblePattern = escapedRaw.replace(/[\-_\\s]+/g, '[-_\\s]?');
 
-    // Flexible lookup: match certificateId (exact or contains), full ref (SSS/2026/08/ALIET/SSS-xxx), or rollNumber
+    // Flexible lookup: match certificateId (exact, flexible hyphen/underscore, or contains) OR rollNumber
     const certificate = await Certificate.findOne({
       $or: [
         { certificateId: rawId },
-        { certificateId: { $regex: new RegExp(`^${escaped}$`, 'i') } },
-        { certificateId: { $regex: new RegExp(escaped, 'i') } },
-        { rollNumber: { $regex: new RegExp(`^${escaped}$`, 'i') } }
+        { certificateId: { $regex: new RegExp(`^${flexiblePattern}$`, 'i') } },
+        { certificateId: { $regex: new RegExp(escapedRaw, 'i') } },
+        { rollNumber: { $regex: new RegExp(`^${escapedRaw}$`, 'i') } },
+        { rollNumber: { $regex: new RegExp(escapedRaw, 'i') } }
       ]
     });
 
