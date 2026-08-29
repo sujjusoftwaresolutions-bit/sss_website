@@ -12,32 +12,39 @@ const generateToken = (id) => {
 // Generate 6-digit OTP
 const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString();
 
-// ── Nodemailer transporter (Gmail SMTP) ───────────────────────────────────────
+// ── Nodemailer transporter (Production SMTP / Gmail) ──────────────────────────
 const createTransporter = () => {
-  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-    return null; // Email not configured — fall back to console log
+  const user = process.env.SMTP_EMAIL || process.env.EMAIL_USER;
+  const pass = process.env.SMTP_PASSWORD || process.env.EMAIL_PASS;
+  const host = process.env.SMTP_HOST || 'smtp.gmail.com';
+  const port = process.env.SMTP_PORT ? parseInt(process.env.SMTP_PORT) : 587;
+
+  if (!user || !pass) {
+    return null; // Email credentials missing
   }
+
   return nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
-    },
+    host,
+    port,
+    secure: port === 465,
+    auth: { user, pass },
   });
 };
 
 // ── Send OTP Email ─────────────────────────────────────────────────────────────
 const sendOTPEmail = async (email, otp) => {
   const transporter = createTransporter();
+  const fromEmail = process.env.SMTP_EMAIL || process.env.EMAIL_USER || 'noreply@sujjusoftwaresolutions.com';
+  
   if (!transporter) {
-    console.log(`[EMAIL MOCK] OTP for ${email}: ${otp}`);
+    console.warn(`[WARNING] Email SMTP credentials not configured in environment variables.`);
     return;
   }
 
   const mailOptions = {
-    from: `"SUJJU Software Solutions" <${process.env.EMAIL_USER}>`,
+    from: `"SUJJU Software Solutions" <${fromEmail}>`,
     to: email,
-    subject: '🔐 Your OTP for SUJJU Software Solutions',
+    subject: '🔐 Your OTP Code - SUJJU Software Solutions',
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 500px; margin: auto; background: #050B14; color: #fff; padding: 32px; border-radius: 12px; border: 1px solid #D4AF37;">
         <div style="text-align: center; margin-bottom: 24px;">
@@ -45,17 +52,45 @@ const sendOTPEmail = async (email, otp) => {
           <p style="color: #aaa; margin: 4px 0;">Certificate Verification Portal</p>
         </div>
         <h3 style="color: #fff;">Your OTP Code</h3>
-        <p style="color: #ccc;">Use the following OTP to verify your email address. It is valid for <strong>10 minutes</strong>.</p>
+        <p style="color: #ccc;">Use the following OTP code to verify your account. It is valid for <strong>10 minutes</strong>.</p>
         <div style="text-align: center; margin: 32px 0;">
           <span style="background: #D4AF37; color: #050B14; font-size: 36px; font-weight: bold; padding: 16px 32px; border-radius: 8px; letter-spacing: 8px;">${otp}</span>
         </div>
-        <p style="color: #888; font-size: 12px; text-align: center;">If you did not request this OTP, please ignore this email.</p>
+        <p style="color: #888; font-size: 12px; text-align: center;">If you did not request this OTP, please ignore this message.</p>
       </div>
     `,
   };
 
-  await transporter.sendMail(mailOptions);
-  console.log(`[EMAIL SENT] OTP to ${email}`);
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log(`[EMAIL SENT] OTP delivered to ${email}`);
+  } catch (err) {
+    console.error(`[EMAIL ERROR] Failed to send OTP to ${email}:`, err.message);
+  }
+};
+
+// ── Send OTP SMS ───────────────────────────────────────────────────────────────
+const sendOTPSMS = async (phone, otp) => {
+  const sid = process.env.TWILIO_ACCOUNT_SID;
+  const token = process.env.TWILIO_AUTH_TOKEN;
+  const from = process.env.TWILIO_PHONE_NUMBER;
+
+  if (sid && token && from) {
+    try {
+      const twilio = require('twilio')(sid, token);
+      const formattedPhone = phone.startsWith('+') ? phone : `+91${phone}`;
+      await twilio.messages.create({
+        body: `Your OTP for SUJJU Software Solutions is ${otp}. Valid for 10 minutes.`,
+        from,
+        to: formattedPhone,
+      });
+      console.log(`[SMS SENT] Real SMS delivered to ${formattedPhone}`);
+    } catch (smsErr) {
+      console.error('[SMS ERROR] Failed to send SMS:', smsErr.message);
+    }
+  } else {
+    console.log(`[SMS NOTICE] Twilio credentials not set. OTP for ${phone}: ${otp}`);
+  }
 };
 
 // ── Register User ──────────────────────────────────────────────────────────────
@@ -77,18 +112,14 @@ const registerUser = async (req, res) => {
       await OTP.create({ email, otp: emailOtp, type: 'email' });
       await OTP.create({ phone, otp: phoneOtp, type: 'phone' });
 
-      // Send email OTP (real email if configured, else console log)
+      // Send real Email & SMS OTPs
       await sendOTPEmail(email, emailOtp);
-      // Phone OTP — still mocked until Twilio is configured
-      console.log(`[SMS MOCK] OTP for ${phone}: ${phoneOtp}`);
+      await sendOTPSMS(phone, phoneOtp);
 
       res.status(201).json({
         success: true,
-        message: 'Registration successful. OTP sent to your email and phone.',
+        message: 'Registration successful. OTP sent to your registered email and phone number.',
         userId: user._id,
-        // Only shown in development for testing
-        debug_emailOtp: process.env.NODE_ENV !== 'production' ? emailOtp : undefined,
-        debug_phoneOtp: process.env.NODE_ENV !== 'production' ? phoneOtp : undefined,
       });
     } else {
       res.status(400).json({ success: false, message: 'Invalid user data' });

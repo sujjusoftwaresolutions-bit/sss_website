@@ -105,14 +105,7 @@ const OTPVerification = () => {
           </div>
         )}
 
-        {/* Development OTP Display */}
-        {(debugEmailOtp || debugPhoneOtp) && !success && (
-          <div className="bg-yellow-500/10 border border-yellow-500/50 text-yellow-400 p-4 rounded-xl mb-6 text-sm">
-            <p className="font-bold mb-2">Development Mode - OTP Codes:</p>
-            {debugEmailOtp && <p className="mb-1"><span className="text-gray-400">Email OTP:</span> <span className="font-mono font-bold">{debugEmailOtp}</span></p>}
-            {debugPhoneOtp && <p><span className="text-gray-400">Phone OTP:</span> <span className="font-mono font-bold">{debugPhoneOtp}</span></p>}
-          </div>
-        )}
+
 
         <form onSubmit={handleSubmit} className="space-y-5">
           {/* Email OTP */}
