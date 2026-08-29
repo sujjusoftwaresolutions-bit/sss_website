@@ -40,22 +40,25 @@ app.use(
   })
 );
 
-// ─── Dynamic CORS (Strict Origin Whitelist - No Netlify) ──────────────────────
+// ─── Dynamic CORS (Strict Origin Whitelist) ───────────────────────────────────
 const allowedOrigins = [
   process.env.FRONTEND_URL,
   'http://localhost:5173',
   'http://localhost:3000',
+  'https://sujjusoftwaresolutions.com',
+  'https://www.sujjusoftwaresolutions.com',
   'https://sujjusoftware.com',
   'https://www.sujjusoftware.com',
 ].filter(Boolean);
 
 app.use(cors({
   origin: (origin, callback) => {
-    // Allow non-browser calls (like curl, mobile app) in dev mode or whitelisted origins
+    // Allow non-browser calls (like curl, mobile app) or whitelisted origins
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      callback(new Error('Access Denied: CORS policy restricts this request.'));
+      console.warn(`Blocked CORS request from origin: ${origin}`);
+      callback(null, false);
     }
   },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
@@ -74,10 +77,10 @@ const apiLimiter = rateLimit({
 
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 5, // Strict 5 failed login/register attempts per 15 mins
+  max: 30, // 30 login/register attempts per 15 mins
   standardHeaders: true,
   legacyHeaders: false,
-  message: { success: false, message: 'Too many login attempts. Account temporarily locked for 15 minutes.' },
+  message: { success: false, message: 'Too many login/registration attempts. Please try again after 15 minutes.' },
 });
 
 const contactLimiter = rateLimit({
