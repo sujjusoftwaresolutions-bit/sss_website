@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, ShieldCheck, AlertCircle, Loader2 } from 'lucide-react';
-import { useNavigate, Link } from 'react-router-dom';
+import { Search, ShieldCheck, AlertCircle, Loader2, Eye, Download, Printer, X, Award, CheckCircle2 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import SEO from '../components/SEO';
@@ -13,10 +13,12 @@ const VerifyCertificate = () => {
   const [loading, setLoading] = useState(false);
   const [downloadLoading, setDownloadLoading] = useState(false);
   const [result, setResult] = useState(null);
+  const [showModal, setShowModal] = useState(false);
   const { isAuthenticated, user } = useAuth();
   const navigate = useNavigate();
+  const printRef = useRef(null);
 
-  // Redirect to signup if not authenticated
+  // Redirect to login/signup if not authenticated
   useEffect(() => {
     if (!isAuthenticated) {
       navigate('/login', { state: { from: { pathname: '/verify-certificate' } }, replace: true });
@@ -32,7 +34,7 @@ const VerifyCertificate = () => {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get(`${API_BASE}/certificates/${certId.trim()}`, {
+      const response = await axios.get(`${API_BASE}/certificates/${encodeURIComponent(certId.trim())}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setResult({ status: 'success', data: response.data });
@@ -46,29 +48,31 @@ const VerifyCertificate = () => {
     }
   };
 
-  const handleDownload = async (certId) => {
+  const handleDownload = async (certIdToDownload) => {
+    if (!result?.data?.certificateURL) {
+      // Open Certificate View Modal for Print / PDF save
+      setShowModal(true);
+      return;
+    }
+
     setDownloadLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`${API_BASE}/certificates/download/${certId}`, {
+      const response = await fetch(`${API_BASE}/certificates/download/${certIdToDownload}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
       if (!response.ok) {
-        let errMsg = 'Download failed. Please try again.';
-        try { const err = await response.json(); errMsg = err.message || errMsg; } catch(e) {}
-        alert(errMsg);
+        setShowModal(true);
         return;
       }
 
-      // Get filename from Content-Disposition or build from certId
       const disposition = response.headers.get('Content-Disposition');
-      let filename = `Certificate_${certId}`;
+      let filename = `Certificate_${certIdToDownload}`;
       if (disposition) {
         const match = disposition.match(/filename="?([^"]+)"?/);
         if (match) filename = match[1];
       } else {
-        // Fallback: detect from blob type
         const contentType = response.headers.get('Content-Type') || '';
         if (contentType.includes('png')) filename += '.png';
         else if (contentType.includes('jpeg') || contentType.includes('jpg')) filename += '.jpg';
@@ -86,10 +90,14 @@ const VerifyCertificate = () => {
       window.URL.revokeObjectURL(blobUrl);
     } catch (error) {
       console.error('Download failed:', error);
-      alert('Download failed. Please try again.');
+      setShowModal(true);
     } finally {
       setDownloadLoading(false);
     }
+  };
+
+  const handlePrint = () => {
+    window.print();
   };
 
   return (
@@ -112,7 +120,7 @@ const VerifyCertificate = () => {
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ type: 'spring', stiffness: 200, damping: 20 }}
-            className="w-20 h-20 bg-brand-gold/20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-[0_0_30px_rgba(212,175,55,0.3)]"
+            className="w-20 h-20 bg-brand-gold/20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-[0_0_30px_rgba(212,175,55,0.3)] border border-brand-gold/40"
           >
             <ShieldCheck className="w-10 h-10 text-brand-gold" />
           </motion.div>
@@ -131,20 +139,19 @@ const VerifyCertificate = () => {
             className="text-gray-400 text-lg max-w-xl mx-auto"
           >
             {isAuthenticated
-              ? `Welcome, ${user?.fullName}! Enter a certificate ID to verify it.`
+              ? `Welcome, ${user?.fullName}! Enter a certificate ID or roll number to verify.`
               : 'Login or sign up to verify and view your certificates.'}
           </motion.p>
         </div>
 
-        {/* Authenticated content only — non-authenticated users are redirected via useEffect */}
+        {/* Authenticated Verification Form */}
         {isAuthenticated && (
           <>
-            {/* Verification Form */}
             <motion.div
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.3 }}
-              className="w-full bg-white/5 border border-white/10 rounded-2xl p-6 md:p-10 backdrop-blur-sm"
+              className="w-full bg-white/5 border border-white/10 rounded-2xl p-6 md:p-10 backdrop-blur-sm shadow-xl"
             >
               <form onSubmit={handleVerify} className="flex flex-col md:flex-row gap-4">
                 <div className="relative flex-1">
@@ -155,7 +162,7 @@ const VerifyCertificate = () => {
                     type="text"
                     value={certId}
                     onChange={(e) => setCertId(e.target.value)}
-                    placeholder="Enter Certificate ID e.g. SSS_3245"
+                    placeholder="Enter Certificate ID e.g. SSS-020 or Roll Number 25HP1A1225"
                     className="w-full bg-[#03070C] border border-white/20 rounded-xl py-4 pl-12 pr-4 text-white placeholder-gray-500 focus:outline-none focus:border-brand-gold focus:ring-1 focus:ring-brand-gold transition-colors"
                     required
                   />
@@ -171,7 +178,7 @@ const VerifyCertificate = () => {
               </form>
             </motion.div>
 
-            {/* Results */}
+            {/* Results Section */}
             <div className="w-full mt-8">
               <AnimatePresence mode="wait">
                 {result?.status === 'error' && (
@@ -194,59 +201,80 @@ const VerifyCertificate = () => {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
-                    className="bg-green-500/10 border border-green-500/20 rounded-2xl p-6 md:p-8 flex flex-col items-center"
+                    className="bg-green-500/10 border border-green-500/20 rounded-2xl p-6 md:p-8 flex flex-col items-center shadow-2xl"
                   >
                     <div className="flex items-center gap-3 mb-6">
-                      <ShieldCheck className="w-8 h-8 text-green-500" />
-                      <h3 className="text-2xl font-outfit font-bold text-green-500">Certificate Verified ✓</h3>
+                      <ShieldCheck className="w-8 h-8 text-green-400" />
+                      <h3 className="text-2xl font-outfit font-bold text-green-400">Certificate Verified ✓</h3>
                     </div>
 
-                    <div className="w-full bg-black/40 rounded-xl p-6 mb-6">
+                    <div className="w-full bg-black/50 border border-white/10 rounded-xl p-6 mb-6">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                           <p className="text-gray-400 text-sm">Certificate ID</p>
-                          <p className="text-white font-mono font-medium text-lg">{result.data.certificateId}</p>
+                          <p className="text-white font-mono font-bold text-lg text-brand-gold">{result.data.certificateId}</p>
                         </div>
                         <div>
                           <p className="text-gray-400 text-sm">Issued To</p>
-                          <p className="text-white font-medium text-lg">{result.data.studentName}</p>
+                          <p className="text-white font-semibold text-lg">{result.data.studentName}</p>
                         </div>
+                        {result.data.rollNumber && (
+                          <div>
+                            <p className="text-gray-400 text-sm">Roll Number</p>
+                            <p className="text-white font-mono font-medium text-lg">{result.data.rollNumber}</p>
+                          </div>
+                        )}
+                        {result.data.collegeName && (
+                          <div>
+                            <p className="text-gray-400 text-sm">College / Institution</p>
+                            <p className="text-white font-medium text-base">{result.data.collegeName}</p>
+                          </div>
+                        )}
                         <div>
-                          <p className="text-gray-400 text-sm">Course</p>
-                          <p className="text-white font-medium text-lg">{result.data.course || result.data.courseName}</p>
+                          <p className="text-gray-400 text-sm">Course / Program</p>
+                          <p className="text-white font-medium text-base">{result.data.course || result.data.courseName}</p>
                         </div>
                         <div>
                           <p className="text-gray-400 text-sm">Issue Date</p>
-                          <p className="text-white font-medium text-lg">
-                            {new Date(result.data.issuedDate || result.data.issueDate).toLocaleDateString()}
+                          <p className="text-white font-medium text-base">
+                            {new Date(result.data.issuedDate || result.data.issueDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
                           </p>
                         </div>
                         <div>
-                          <p className="text-gray-400 text-sm">Status</p>
-                          <span className="inline-block bg-green-500/20 text-green-400 font-bold px-3 py-1 rounded-full text-sm">
-                            {result.data.status?.toUpperCase() || 'VALID'}
+                          <p className="text-gray-400 text-sm">Authenticity Status</p>
+                          <span className="inline-flex items-center gap-1.5 bg-green-500/20 text-green-400 font-bold px-3 py-1 rounded-full text-xs tracking-wider border border-green-500/30">
+                            <CheckCircle2 className="w-3.5 h-3.5" /> OFFICIAL & VALID
                           </span>
                         </div>
                       </div>
                     </div>
 
-                    {result.data.certificateURL && (
+                    {/* Action Buttons: View & Download */}
+                    <div className="flex flex-wrap items-center justify-center gap-4 w-full">
+                      <button
+                        onClick={() => setShowModal(true)}
+                        className="flex items-center justify-center gap-2 py-3.5 px-6 rounded-xl font-bold text-white bg-white/10 hover:bg-white/20 border border-white/20 transition-all hover:scale-[1.02] active:scale-95"
+                      >
+                        <Eye className="w-5 h-5 text-brand-gold" />
+                        View Certificate
+                      </button>
+
                       <button
                         onClick={() => handleDownload(result.data.certificateId)}
                         disabled={downloadLoading}
-                        className="flex items-center gap-2 py-3 px-8 rounded-xl font-bold text-brand-navy disabled:opacity-70"
+                        className="flex items-center justify-center gap-2 py-3.5 px-8 rounded-xl font-bold text-brand-navy shadow-[0_4px_20px_rgba(212,175,55,0.4)] transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-70"
                         style={{ background: 'linear-gradient(135deg, #F4C542 0%, #D4AF37 100%)' }}
                       >
                         {downloadLoading ? (
-                          <><Loader2 className="w-5 h-5 animate-spin" /> Downloading...</>
+                          <><Loader2 className="w-5 h-5 animate-spin" /> Preparing...</>
                         ) : (
-                          'Download Certificate'
+                          <><Download className="w-5 h-5" /> Download Certificate</>
                         )}
                       </button>
-                    )}
+                    </div>
 
-                    <p className="text-gray-400 text-sm mt-6 text-center max-w-lg">
-                      This certificate is officially verified and tamper-proof by SUJJU Software Solutions.
+                    <p className="text-gray-400 text-xs mt-6 text-center max-w-lg">
+                      🔒 Official certificate verified by SUJJU Software Solutions Security Registry.
                     </p>
                   </motion.div>
                 )}
@@ -255,6 +283,118 @@ const VerifyCertificate = () => {
           </>
         )}
       </div>
+
+      {/* Official Certificate View Modal */}
+      <AnimatePresence>
+        {showModal && result?.data && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md overflow-y-auto"
+          >
+            <motion.div
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 20 }}
+              className="relative w-full max-w-4xl bg-[#09111E] border-2 border-brand-gold/40 rounded-3xl p-6 md:p-10 shadow-[0_0_50px_rgba(212,175,55,0.25)] text-white overflow-hidden my-8"
+            >
+              {/* Modal Top Actions */}
+              <div className="flex items-center justify-between mb-6 pb-4 border-b border-white/10">
+                <div className="flex items-center gap-2">
+                  <Award className="w-6 h-6 text-brand-gold" />
+                  <span className="text-lg font-outfit font-bold text-white">Official Certificate Document</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={handlePrint}
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-brand-gold/20 hover:bg-brand-gold/30 text-brand-gold border border-brand-gold/40 text-sm font-semibold transition-all"
+                  >
+                    <Printer className="w-4 h-4" /> Print / Save PDF
+                  </button>
+                  <button
+                    onClick={() => setShowModal(false)}
+                    className="p-2 rounded-full bg-white/10 hover:bg-white/20 text-gray-300 transition-colors"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Printable Official Certificate View */}
+              <div ref={printRef} className="bg-[#050B14] border-4 border-brand-gold/60 p-8 md:p-12 rounded-2xl relative overflow-hidden shadow-inner">
+                {/* Certificate Background Elements */}
+                <div className="absolute top-0 right-0 w-64 h-64 bg-brand-gold/5 rounded-full blur-3xl pointer-events-none" />
+                <div className="absolute bottom-0 left-0 w-64 h-64 bg-brand-gold/5 rounded-full blur-3xl pointer-events-none" />
+                
+                {/* Header Badge & Company Title */}
+                <div className="flex flex-col md:flex-row items-center justify-between border-b-2 border-brand-gold/30 pb-6 mb-8 gap-4 text-center md:text-left">
+                  <div>
+                    <h2 className="text-2xl md:text-3xl font-extrabold font-outfit text-white tracking-wide">
+                      SUJJU SOFTWARE SOLUTIONS
+                    </h2>
+                    <p className="text-brand-gold font-medium text-xs md:text-sm tracking-widest uppercase mt-1">
+                      Software · Artificial Intelligence · Training
+                    </p>
+                  </div>
+                  <div className="text-right flex flex-col items-center md:items-end">
+                    <span className="inline-block px-3 py-1 bg-brand-gold/20 text-brand-gold border border-brand-gold/40 rounded-full font-mono text-xs font-bold">
+                      Ref: SSS/2026/08/ALIET/{result.data.certificateId}
+                    </span>
+                    <p className="text-gray-400 text-xs mt-1">Date: {new Date(result.data.issuedDate || Date.now()).toLocaleDateString()}</p>
+                  </div>
+                </div>
+
+                {/* Body Content */}
+                <div className="text-center py-4 space-y-6">
+                  <p className="text-brand-gold uppercase tracking-[0.25em] font-semibold text-sm">
+                    Intership Offer & Completion Certificate
+                  </p>
+
+                  <h3 className="text-3xl md:text-4xl font-extrabold font-outfit text-white">
+                    {result.data.studentName}
+                  </h3>
+
+                  {result.data.rollNumber && (
+                    <p className="text-gray-300 text-sm font-mono">
+                      Roll Number: <span className="text-brand-gold font-bold">{result.data.rollNumber}</span> | {result.data.department} {result.data.year}
+                    </p>
+                  )}
+
+                  {result.data.collegeName && (
+                    <p className="text-gray-400 text-sm italic">
+                      {result.data.collegeName}
+                    </p>
+                  )}
+
+                  <p className="text-gray-300 max-w-2xl mx-auto leading-relaxed text-sm md:text-base pt-2">
+                    This is to verify that <strong className="text-white">{result.data.studentName}</strong> has been offered and successfully completed the practical industry training in <strong className="text-brand-gold">{result.data.course}</strong> under the technical guidance of our engineering team at SUJJU Software Solutions.
+                  </p>
+
+                  {/* Gold Verification Stamp & Signatures */}
+                  <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-6">
+                    <div className="flex items-center gap-3">
+                      <div className="w-14 h-14 rounded-full bg-brand-gold/20 border-2 border-brand-gold flex items-center justify-center shadow-[0_0_15px_rgba(212,175,55,0.4)]">
+                        <CheckCircle2 className="w-8 h-8 text-brand-gold" />
+                      </div>
+                      <div className="text-left">
+                        <p className="text-xs text-gray-400 uppercase font-bold tracking-wider">Verification Status</p>
+                        <p className="text-sm font-bold text-green-400">OFFICIALLY VERIFIED & VALID</p>
+                      </div>
+                    </div>
+
+                    <div className="text-center md:text-right border-t md:border-t-0 pt-4 md:pt-0 border-white/10">
+                      <p className="font-outfit font-extrabold text-white text-lg tracking-wider">U. Uppu</p>
+                      <p className="text-brand-gold font-bold text-xs">CHANDRA SEKHAR UPPU</p>
+                      <p className="text-gray-400 text-xs">FOUNDER & CEO, SUJJU Software Solutions</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 };
