@@ -8,11 +8,21 @@ const { uploadToCloudinary } = require('../middleware/uploadMiddleware');
 // @access  Private (must be logged in)
 const getCertificateById = async (req, res) => {
   try {
-    const certId = req.params.id;
-    const certificate = await Certificate.findOne({ certificateId: certId });
+    const rawId = req.params.id.trim();
+    const escaped = rawId.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+    // Flexible lookup: match certificateId (exact or contains), full ref (SSS/2026/08/ALIET/SSS-xxx), or rollNumber
+    const certificate = await Certificate.findOne({
+      $or: [
+        { certificateId: rawId },
+        { certificateId: { $regex: new RegExp(`^${escaped}$`, 'i') } },
+        { certificateId: { $regex: new RegExp(escaped, 'i') } },
+        { rollNumber: { $regex: new RegExp(`^${escaped}$`, 'i') } }
+      ]
+    });
 
     if (!certificate) {
-      return res.status(404).json({ success: false, message: 'Certificate not found. Please check the ID and try again.' });
+      return res.status(404).json({ success: false, message: 'Certificate not found. Please check the Certificate ID or Roll Number and try again.' });
     }
 
     // Require verified email and phone OTP
@@ -23,15 +33,28 @@ const getCertificateById = async (req, res) => {
       });
     }
 
-    // Ownership check — admin can see all, user can only see their own or public certs
+    // Auto-link certificate to user if roll number or email matches, or if unassigned
+    if (!certificate.userId && req.user) {
+      if (
+        (certificate.rollNumber && req.user.rollNumber && certificate.rollNumber.toLowerCase() === req.user.rollNumber.toLowerCase()) ||
+        (certificate.studentEmail && req.user.email && certificate.studentEmail.toLowerCase() === req.user.email.toLowerCase())
+      ) {
+        certificate.userId = req.user.id;
+        await certificate.save();
+      }
+    }
+
+    // Ownership check — admin can see all, user can see their own, linked, or public certs
     if (
       certificate.userId &&
       certificate.userId.toString() !== req.user.id &&
-      req.user.role !== 'admin'
+      req.user.role !== 'admin' &&
+      certificate.rollNumber?.toLowerCase() !== req.user.rollNumber?.toLowerCase() &&
+      certificate.studentEmail?.toLowerCase() !== req.user.email?.toLowerCase()
     ) {
       return res.status(403).json({
         success: false,
-        message: 'Unauthorized. This certificate does not belong to your account.',
+        message: 'Unauthorized. This certificate belongs to another registered account.',
       });
     }
 

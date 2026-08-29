@@ -1,84 +1,165 @@
-/**
- * Seed Script - Add test certificates to MongoDB
- * Run: node seedCertificates.js
- */
-require('dotenv').config();
 const mongoose = require('mongoose');
 const Certificate = require('./models/Certificate');
 
-const sampleCertificates = [
+const initialCertificates = [
   {
-    certificateId: 'SSS2025-001',
-    studentName: 'Rahul Sharma',
-    studentEmail: 'rahul@example.com',
-    course: 'Full Stack Web Development',
-    collegeName: 'JNTU Hyderabad',
-    rollNumber: '21CS1A0501',
-    department: 'CSE',
-    year: '3rd Year',
-    issuedDate: new Date('2025-06-15'),
-    status: 'active',
-  },
-  {
-    certificateId: 'SSS2025-002',
-    studentName: 'Priya Reddy',
-    studentEmail: 'priya@example.com',
-    course: 'Python & Machine Learning',
-    collegeName: 'Osmania University',
-    rollNumber: '22CS2A1234',
+    certificateId: 'SSS-017',
+    studentName: 'R. Harsha vardhan',
+    studentEmail: 'harshavardhan.r@aliet.ac.in',
+    course: 'Full Stack Development using MERN Stack',
+    collegeName: 'Andhra Loyola Institute of Engineering and Technology (ALIET)',
+    rollNumber: '25HP1A1229',
     department: 'IT',
     year: '2nd Year',
-    issuedDate: new Date('2025-07-01'),
+    issuedDate: new Date('2026-08-10'),
     status: 'active',
+    issuedBy: 'CHANDRA SEKHAR UPPU - FOUNDER & CEO SSS',
   },
   {
-    certificateId: 'SSS2025-003',
-    studentName: 'Arun Kumar',
-    studentEmail: 'arun@example.com',
-    course: 'React & Node.js Internship',
-    collegeName: 'Vasavi Engineering College',
-    rollNumber: '20CS3B4567',
-    department: 'ECE',
-    year: '4th Year',
-    issuedDate: new Date('2025-05-20'),
+    certificateId: 'SSS-018',
+    studentName: 'K. Hemanth kumar',
+    studentEmail: 'hemanthkumar.k@aliet.ac.in',
+    course: 'Full Stack Development using MERN Stack',
+    collegeName: 'Andhra Loyola Institute of Engineering and Technology (ALIET)',
+    rollNumber: '25HP1A1230',
+    department: 'IT',
+    year: '2nd Year',
+    issuedDate: new Date('2026-08-10'),
     status: 'active',
+    issuedBy: 'CHANDRA SEKHAR UPPU - FOUNDER & CEO SSS',
   },
   {
-    certificateId: 'SSS2026-001',
-    studentName: 'Sneha Patil',
-    studentEmail: 'sneha@example.com',
-    course: 'Java & Spring Boot',
-    collegeName: 'CVR College of Engineering',
-    rollNumber: '23CS1A0789',
-    department: 'CSE',
-    year: '1st Year',
-    issuedDate: new Date('2026-01-10'),
+    certificateId: 'SSS-019',
+    studentName: 'Y. Siddhartha',
+    studentEmail: 'siddhartha.y@aliet.ac.in',
+    course: 'Full Stack Development using MERN Stack',
+    collegeName: 'Andhra Loyola Institute of Engineering and Technology (ALIET)',
+    rollNumber: '25HP1A1246',
+    department: 'IT',
+    year: '2nd Year',
+    issuedDate: new Date('2026-08-10'),
     status: 'active',
+    issuedBy: 'CHANDRA SEKHAR UPPU - FOUNDER & CEO SSS',
+  },
+  {
+    certificateId: 'SSS-020',
+    studentName: 'B. Akhil',
+    studentEmail: 'akhil.b@aliet.ac.in',
+    course: 'Full Stack Development using MERN Stack',
+    collegeName: 'Andhra Loyola Institute of Engineering and Technology (ALIET)',
+    rollNumber: '25HP1A1225',
+    department: 'IT',
+    year: '2nd Year',
+    issuedDate: new Date('2026-08-10'),
+    status: 'active',
+    issuedBy: 'CHANDRA SEKHAR UPPU - FOUNDER & CEO SSS',
+  },
+  {
+    certificateId: 'SSS-021',
+    studentName: 'Sk. Rabiya',
+    studentEmail: 'rabiya.sk@aliet.ac.in',
+    course: 'Full Stack Development using MERN Stack',
+    collegeName: 'Andhra Loyola Institute of Engineering and Technology (ALIET)',
+    rollNumber: '25HP1A1214',
+    department: 'IT',
+    year: '2nd Year',
+    issuedDate: new Date('2026-08-10'),
+    status: 'active',
+    issuedBy: 'CHANDRA SEKHAR UPPU - FOUNDER & CEO SSS',
+  },
+  {
+    certificateId: 'SSS-022',
+    studentName: 'G. Harika',
+    studentEmail: 'harika.g@aliet.ac.in',
+    course: 'Full Stack Development using MERN Stack',
+    collegeName: 'Andhra Loyola Institute of Engineering and Technology (ALIET)',
+    rollNumber: '25HP1A1206',
+    department: 'IT',
+    year: '2nd Year',
+    issuedDate: new Date('2026-08-10'),
+    status: 'active',
+    issuedBy: 'CHANDRA SEKHAR UPPU - FOUNDER & CEO SSS',
+  },
+  {
+    certificateId: 'SSS-023',
+    studentName: 'T. Shalini',
+    studentEmail: 'shalini.t@aliet.ac.in',
+    course: 'Full Stack Development using MERN Stack',
+    collegeName: 'Andhra Loyola Institute of Engineering and Technology (ALIET)',
+    rollNumber: '25HP1A1217',
+    department: 'IT',
+    year: '2nd Year',
+    issuedDate: new Date('2026-08-10'),
+    status: 'active',
+    issuedBy: 'CHANDRA SEKHAR UPPU - FOUNDER & CEO SSS',
+  },
+  {
+    certificateId: 'SSS-024',
+    studentName: 'B. Dil Rani',
+    studentEmail: 'dilrani.b@aliet.ac.in',
+    course: 'Full Stack Development using MERN Stack',
+    collegeName: 'Andhra Loyola Institute of Engineering and Technology (ALIET)',
+    rollNumber: '25HP1A1204',
+    department: 'IT',
+    year: '2nd Year',
+    issuedDate: new Date('2026-08-10'),
+    status: 'active',
+    issuedBy: 'CHANDRA SEKHAR UPPU - FOUNDER & CEO SSS',
+  },
+  {
+    certificateId: 'SSS-025',
+    studentName: 'B. Mahitha',
+    studentEmail: 'mahitha.b@aliet.ac.in',
+    course: 'Full Stack Development using MERN Stack',
+    collegeName: 'Andhra Loyola Institute of Engineering and Technology (ALIET)',
+    rollNumber: '25HP1A1211',
+    department: 'IT',
+    year: '2nd Year',
+    issuedDate: new Date('2026-08-10'),
+    status: 'active',
+    issuedBy: 'CHANDRA SEKHAR UPPU - FOUNDER & CEO SSS',
+  },
+  {
+    certificateId: 'SSS-028',
+    studentName: 'D. Sai Vennela',
+    studentEmail: 'saivennela.d@aliet.ac.in',
+    course: 'Full Stack Development using MERN Stack',
+    collegeName: 'Andhra Loyola Institute of Engineering and Technology (ALIET)',
+    rollNumber: '25HP1A1216',
+    department: 'IT',
+    year: '2nd Year',
+    issuedDate: new Date('2026-08-10'),
+    status: 'active',
+    issuedBy: 'CHANDRA SEKHAR UPPU - FOUNDER & CEO SSS',
+  },
+  {
+    certificateId: 'SSS-029',
+    studentName: 'K. Teja Sri',
+    studentEmail: 'tejasri.k@aliet.ac.in',
+    course: 'Full Stack Development using MERN Stack',
+    collegeName: 'Andhra Loyola Institute of Engineering and Technology (ALIET)',
+    rollNumber: '25HP1A1220',
+    department: 'IT',
+    year: '2nd Year',
+    issuedDate: new Date('2026-08-10'),
+    status: 'active',
+    issuedBy: 'CHANDRA SEKHAR UPPU - FOUNDER & CEO SSS',
   },
 ];
 
-const seed = async () => {
+const autoSeedCertificates = async () => {
   try {
-    await mongoose.connect(process.env.MONGODB_URI);
-    console.log('✅ MongoDB Connected');
-
-    // Clear existing certificates
-    await Certificate.deleteMany({});
-    console.log('🗑️  Cleared existing certificates');
-
-    // Insert new ones
-    const inserted = await Certificate.insertMany(sampleCertificates);
-    console.log(`✅ Inserted ${inserted.length} sample certificates:`);
-    inserted.forEach(c => console.log(`   - ${c.certificateId}: ${c.studentName} — ${c.course}`));
-
-    console.log('\n🎉 Seed complete! Test with these IDs:');
-    inserted.forEach(c => console.log(`   ${c.certificateId}`));
-
-    process.exit(0);
+    for (const cert of initialCertificates) {
+      await Certificate.updateOne(
+        { certificateId: cert.certificateId },
+        { $setOnInsert: cert },
+        { upsert: true }
+      );
+    }
+    console.log('✅ Student certificates auto-seeded successfully');
   } catch (err) {
-    console.error('❌ Seed error:', err.message);
-    process.exit(1);
+    console.error('❌ Auto-seed certificates error:', err.message);
   }
 };
 
-seed();
+module.exports = { initialCertificates, autoSeedCertificates };

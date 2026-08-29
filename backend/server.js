@@ -108,8 +108,13 @@ app.use(hpp());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // ─── MongoDB Connection ────────────────────────────────────────────────────────
+const { autoSeedCertificates } = require('./seedCertificates');
+
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/sujju_software')
-  .then(() => console.log('✅ Connected to MongoDB'))
+  .then(() => {
+    console.log('✅ Connected to MongoDB');
+    autoSeedCertificates();
+  })
   .catch(err => {
     console.error('❌ MongoDB connection error:', err.message);
     process.exit(1);
