@@ -177,6 +177,7 @@ const OTPVerification = () => {
                 maxLength={6}
                 className="w-full px-4 py-3 bg-black/30 border border-white/10 rounded-xl text-white text-center text-2xl tracking-widest focus:outline-none focus:border-brand-gold focus:ring-1 focus:ring-brand-gold transition-colors font-mono"
                 placeholder="000000"
+                required
                 disabled={success}
               />
             </div>

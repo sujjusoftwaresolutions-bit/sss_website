@@ -180,16 +180,24 @@ const registerAdmin = async (req, res) => {
   }
 };
 
-// ── Verify OTP (Strict Real OTP Mode) ──────────────────────────────────────────
+// ── Verify OTP (Strict Email & Phone OTP Mode) ──────────────────────────────────
 const verifyOTP = async (req, res) => {
   try {
     const { email, phone, emailOtp, phoneOtp } = req.body;
 
-    // Require the exact real 6-digit OTP dispatched to the student's email
+    // 1. Validate Email OTP
     const validEmailOtp = await OTP.findOne({ email, otp: emailOtp, type: 'email' });
-    
     if (!validEmailOtp) {
-      return res.status(400).json({ success: false, message: 'Invalid or expired OTP. Please enter the exact code sent to your email.' });
+      return res.status(400).json({ success: false, message: 'Invalid or expired Email OTP. Please check your email inbox.' });
+    }
+
+    // 2. Validate Phone OTP (If Twilio SMS is active)
+    const isSmsActive = Boolean(process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN && process.env.TWILIO_PHONE_NUMBER);
+    if (isSmsActive) {
+      const validPhoneOtp = await OTP.findOne({ phone, otp: phoneOtp, type: 'phone' });
+      if (!validPhoneOtp) {
+        return res.status(400).json({ success: false, message: 'Invalid or expired Phone SMS OTP. Please check your phone messages.' });
+      }
     }
 
     const user = await User.findOne({ email });
