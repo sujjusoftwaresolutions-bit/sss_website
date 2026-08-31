@@ -179,9 +179,12 @@ const verifyOTP = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Invalid or expired Email OTP' });
     }
 
-    const validPhoneOtp = await OTP.findOne({ phone, otp: phoneOtp, type: 'phone' });
-    if (!validPhoneOtp) {
-      return res.status(400).json({ success: false, message: 'Invalid or expired Phone OTP' });
+    const isSmsConfigured = Boolean(process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN && process.env.TWILIO_PHONE_NUMBER);
+    if (isSmsConfigured) {
+      const validPhoneOtp = await OTP.findOne({ phone, otp: phoneOtp, type: 'phone' });
+      if (!validPhoneOtp) {
+        return res.status(400).json({ success: false, message: 'Invalid or expired Phone OTP' });
+      }
     }
 
     const user = await User.findOne({ email });
