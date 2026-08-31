@@ -36,9 +36,10 @@ userSchema.pre('save', async function () {
 
   // 2. Auto-generate unique studentId for brand new users
   if (this.isNew && !this.studentId) {
+    const randomSuffix = Math.floor(100 + Math.random() * 900);
     const count = await this.constructor.countDocuments();
-    const paddedCount = String(count + 1).padStart(5, '0');
-    this.studentId = `SSS${new Date().getFullYear()}${paddedCount}`;
+    const paddedCount = String(count + 1).padStart(4, '0');
+    this.studentId = `SSS${new Date().getFullYear()}${paddedCount}${randomSuffix}`;
   }
 });
 
