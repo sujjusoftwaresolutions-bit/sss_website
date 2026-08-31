@@ -213,6 +213,7 @@ const Signup = () => {
                   name="email" 
                   value={formData.email} 
                   onChange={handleInputChange} 
+                  autoComplete="email"
                   required
                   className="w-full pl-10 pr-4 py-2.5 bg-black/30 border border-white/10 rounded-xl text-white focus:border-brand-gold focus:ring-1 focus:ring-brand-gold outline-none transition-colors" 
                   placeholder="student@example.com" 
@@ -230,6 +231,7 @@ const Signup = () => {
                   name="phone" 
                   value={formData.phone} 
                   onChange={handleInputChange} 
+                  autoComplete="tel"
                   required
                   className="w-full pl-10 pr-4 py-2.5 bg-black/30 border border-white/10 rounded-xl text-white focus:border-brand-gold focus:ring-1 focus:ring-brand-gold outline-none transition-colors" 
                   placeholder="9876543210" 
@@ -247,6 +249,7 @@ const Signup = () => {
                   name="password" 
                   value={formData.password} 
                   onChange={handleInputChange} 
+                  autoComplete="new-password"
                   required
                   className="w-full pl-10 pr-4 py-2.5 bg-black/30 border border-white/10 rounded-xl text-white focus:border-brand-gold focus:ring-1 focus:ring-brand-gold outline-none transition-colors" 
                   placeholder="••••••••" 
@@ -264,6 +267,7 @@ const Signup = () => {
                   name="confirmPassword" 
                   value={formData.confirmPassword} 
                   onChange={handleInputChange} 
+                  autoComplete="new-password"
                   required
                   className="w-full pl-10 pr-4 py-2.5 bg-black/30 border border-white/10 rounded-xl text-white focus:border-brand-gold focus:ring-1 focus:ring-brand-gold outline-none transition-colors" 
                   placeholder="••••••••" 

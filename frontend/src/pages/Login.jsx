@@ -79,6 +79,7 @@ const Login = () => {
                 type="text"
                 value={loginId}
                 onChange={(e) => setLoginId(e.target.value)}
+                autoComplete="username"
                 className="w-full pl-10 pr-4 py-3 bg-black/30 border border-white/10 rounded-xl text-white focus:outline-none focus:border-brand-gold focus:ring-1 focus:ring-brand-gold transition-colors"
                 placeholder="Enter email or phone"
                 required
@@ -96,6 +97,7 @@ const Login = () => {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                autoComplete="current-password"
                 className="w-full pl-10 pr-4 py-3 bg-black/30 border border-white/10 rounded-xl text-white focus:outline-none focus:border-brand-gold focus:ring-1 focus:ring-brand-gold transition-colors"
                 placeholder="Enter your password"
                 required
