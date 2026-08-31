@@ -317,4 +317,19 @@ const resendOTP = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, registerAdmin, verifyOTP, resendOTP, loginUser, getProfile };
+// ── Reset Test Users & OTPs (Admin Only or Database Reset) ────────────────────
+const resetTestUsers = async (req, res) => {
+  try {
+    const userRes = await User.deleteMany({ role: { $ne: 'admin' } });
+    const otpRes = await OTP.deleteMany({});
+    res.json({
+      success: true,
+      message: `Database cleaned! Deleted ${userRes.deletedCount} user accounts and cleared all OTP records. All emails & phone numbers can now re-register.`,
+    });
+  } catch (error) {
+    console.error('Reset test users error:', error.message);
+    res.status(500).json({ success: false, message: `Error resetting database: ${error.message}` });
+  }
+};
+
+module.exports = { registerUser, registerAdmin, verifyOTP, resendOTP, resetTestUsers, loginUser, getProfile };
