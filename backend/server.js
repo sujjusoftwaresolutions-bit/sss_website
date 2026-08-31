@@ -92,6 +92,7 @@ const contactLimiter = rateLimit({
 app.use('/api/', apiLimiter);
 app.use('/api/auth/login', authLimiter);
 app.use('/api/auth/register', authLimiter);
+app.use('/api/auth/resend-otp', authLimiter);
 app.use('/api/contact', contactLimiter);
 
 // ─── Body Parsing & Data Sanitization ──────────────────────────────────────────
