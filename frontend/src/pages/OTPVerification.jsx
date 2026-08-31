@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
-import { Mail, Phone, ShieldCheck, ArrowRight, AlertCircle, CheckCircle } from 'lucide-react';
+import { Mail, Phone, ShieldCheck, ArrowRight, AlertCircle, CheckCircle, RefreshCw } from 'lucide-react';
 import SEO from '../components/SEO';
 import { useAuth } from '../context/AuthContext';
 
@@ -11,11 +11,27 @@ const OTPVerification = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-  
+  const [resendLoading, setResendLoading] = useState(false);
+  const [resendMessage, setResendMessage] = useState('');
+  const [timer, setTimer] = useState(0);
+
   const navigate = useNavigate();
   const location = useLocation();
   const { login } = useAuth();
-  const { userId, email, phone, emailOtp: debugEmailOtp, phoneOtp: debugPhoneOtp, from } = location.state || {};
+  const { userId, email, phone, from } = location.state || {};
+
+  // Countdown timer for Resend OTP button
+  useEffect(() => {
+    let interval = null;
+    if (timer > 0) {
+      interval = setInterval(() => {
+        setTimer((prev) => prev - 1);
+      }, 1000);
+    } else {
+      clearInterval(interval);
+    }
+    return () => clearInterval(interval);
+  }, [timer]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -27,15 +43,13 @@ const OTPVerification = () => {
         email,
         phone,
         emailOtp,
-        phoneOtp,
+        phoneOtp: phoneOtp || emailOtp, // Fallback to emailOtp if phoneOtp not entered separately
       });
 
       if (response.data.success) {
         setSuccess(true);
-        // Store token and user data in AuthContext
         login(response.data.token, response.data.user);
         
-        // Redirect to verify certificate (or previous page) after a short delay
         const redirectPath = from?.pathname || '/verify-certificate';
         setTimeout(() => {
           navigate(redirectPath, { replace: true });
@@ -49,8 +63,23 @@ const OTPVerification = () => {
   };
 
   const handleResendOTP = async () => {
-    // In a real implementation, you would call a resend OTP endpoint
-    alert('OTP resend functionality would be implemented here.');
+    if (timer > 0 || resendLoading) return;
+    
+    setResendLoading(true);
+    setResendMessage('');
+    setError('');
+
+    try {
+      const response = await axios.post('/auth/resend-otp', { email, phone });
+      if (response.data.success) {
+        setResendMessage('A new OTP has been sent to your email & phone!');
+        setTimer(30); // 30 second cooldown timer
+      }
+    } catch (err) {
+      setError(err.response?.data?.message || 'Failed to resend OTP. Please try again.');
+    } finally {
+      setResendLoading(false);
+    }
   };
 
   if (!userId) {
@@ -86,8 +115,8 @@ const OTPVerification = () => {
             <ShieldCheck className="w-8 h-8 text-brand-gold" />
           </div>
           <h2 className="text-3xl font-bold text-white font-outfit">Verify Your Account</h2>
-          <p className="text-gray-400 mt-2">
-            Enter the OTPs sent to your email and phone
+          <p className="text-gray-400 mt-2 text-sm">
+            Enter the OTP code sent to your email and phone
           </p>
         </div>
 
@@ -98,20 +127,25 @@ const OTPVerification = () => {
           </div>
         )}
 
-        {error && !success && (
-          <div className="bg-red-500/10 border border-red-500/50 text-red-500 p-3 rounded-xl mb-6 text-sm flex items-center gap-2">
-            <AlertCircle className="w-4 h-4" />
-            {error}
+        {resendMessage && !success && (
+          <div className="bg-green-500/10 border border-green-500/50 text-green-400 p-3 rounded-xl mb-6 text-sm flex items-center gap-2">
+            <CheckCircle className="w-4 h-4 shrink-0" />
+            <span>{resendMessage}</span>
           </div>
         )}
 
-
+        {error && !success && (
+          <div className="bg-red-500/10 border border-red-500/50 text-red-500 p-3 rounded-xl mb-6 text-sm flex items-center gap-2">
+            <AlertCircle className="w-4 h-4 shrink-0" />
+            <span>{error}</span>
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-5">
           {/* Email OTP */}
           <div className="space-y-2">
             <label className="text-sm font-medium text-gray-300 flex items-center gap-2">
-              <Mail className="w-4 h-4" />
+              <Mail className="w-4 h-4 text-brand-gold" />
               Email OTP
             </label>
             <div className="relative">
@@ -132,7 +166,7 @@ const OTPVerification = () => {
           {/* Phone OTP */}
           <div className="space-y-2">
             <label className="text-sm font-medium text-gray-300 flex items-center gap-2">
-              <Phone className="w-4 h-4" />
+              <Phone className="w-4 h-4 text-brand-gold" />
               Phone OTP
             </label>
             <div className="relative">
@@ -143,7 +177,6 @@ const OTPVerification = () => {
                 maxLength={6}
                 className="w-full px-4 py-3 bg-black/30 border border-white/10 rounded-xl text-white text-center text-2xl tracking-widest focus:outline-none focus:border-brand-gold focus:ring-1 focus:ring-brand-gold transition-colors font-mono"
                 placeholder="000000"
-                required
                 disabled={success}
               />
             </div>
@@ -160,14 +193,20 @@ const OTPVerification = () => {
             {!loading && !success && <ArrowRight className="w-5 h-5" />}
           </button>
 
-          <div className="text-center">
+          <div className="text-center pt-2">
             <button
               type="button"
               onClick={handleResendOTP}
-              className="text-sm text-brand-gold hover:underline"
-              disabled={loading || success}
+              disabled={loading || resendLoading || success || timer > 0}
+              className="text-sm text-brand-gold hover:underline disabled:opacity-50 disabled:no-underline flex items-center justify-center gap-1.5 mx-auto"
             >
-              Didn't receive OTP? Resend
+              {resendLoading ? (
+                <><RefreshCw className="w-4 h-4 animate-spin" /> Sending new OTP...</>
+              ) : timer > 0 ? (
+                `Resend OTP in ${timer}s`
+              ) : (
+                "Didn't receive OTP? Resend OTP"
+              )}
             </button>
           </div>
         </form>

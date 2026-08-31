@@ -267,8 +267,38 @@ const getProfile = async (req, res) => {
     }
   } catch (error) {
     console.error(error);
-    res.status(500).json({ success: false, message: 'Server error' });
+// ── Resend OTP ─────────────────────────────────────────────────────────────────
+const resendOTP = async (req, res) => {
+  try {
+    const { email, phone } = req.body;
+
+    if (!email && !phone) {
+      return res.status(400).json({ success: false, message: 'Email or phone number is required to resend OTP.' });
+    }
+
+    const emailOtp = generateOTP();
+    const phoneOtp = generateOTP();
+
+    if (email) {
+      await OTP.deleteMany({ email, type: 'email' });
+      await OTP.create({ email, otp: emailOtp, type: 'email' });
+      await sendOTPEmail(email, emailOtp);
+    }
+
+    if (phone) {
+      await OTP.deleteMany({ phone, type: 'phone' });
+      await OTP.create({ phone, otp: phoneOtp, type: 'phone' });
+      await sendOTPSMS(phone, phoneOtp);
+    }
+
+    res.json({
+      success: true,
+      message: 'A new OTP has been sent to your registered email and phone number.',
+    });
+  } catch (error) {
+    console.error('Resend OTP error:', error.message);
+    res.status(500).json({ success: false, message: `Server error during resend OTP: ${error.message}` });
   }
 };
 
-module.exports = { registerUser, registerAdmin, verifyOTP, loginUser, getProfile };
+module.exports = { registerUser, registerAdmin, verifyOTP, resendOTP, loginUser, getProfile };
