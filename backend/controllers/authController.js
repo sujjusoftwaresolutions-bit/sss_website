@@ -23,11 +23,21 @@ const createTransporter = () => {
     return null; // Email credentials missing
   }
 
+  // If using Gmail, use service: 'gmail' which handles ports & SSL automatically
+  if (user.toLowerCase().includes('@gmail.com') || host.includes('gmail')) {
+    return nodemailer.createTransport({
+      service: 'gmail',
+      auth: { user, pass },
+      tls: { rejectUnauthorized: false },
+    });
+  }
+
   return nodemailer.createTransport({
     host,
     port,
     secure: port === 465,
     auth: { user, pass },
+    tls: { rejectUnauthorized: false },
   });
 };
 
