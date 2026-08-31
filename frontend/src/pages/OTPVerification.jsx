@@ -193,18 +193,6 @@ const OTPVerification = () => {
             {!loading && !success && <ArrowRight className="w-5 h-5" />}
           </button>
 
-          <button
-            type="button"
-            onClick={() => {
-              setEmailOtp('123456');
-              setPhoneOtp('123456');
-            }}
-            disabled={loading || success}
-            className="w-full py-2.5 px-4 rounded-xl font-semibold bg-white/10 hover:bg-white/15 text-brand-gold text-sm border border-brand-gold/30 transition-colors flex items-center justify-center gap-2"
-          >
-            ⚡ Use Test Code (123456)
-          </button>
-
           <div className="text-center pt-2">
             <button
               type="button"

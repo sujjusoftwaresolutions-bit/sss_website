@@ -179,17 +179,16 @@ const registerAdmin = async (req, res) => {
   }
 };
 
-// ── Verify OTP ─────────────────────────────────────────────────────────────────
+// ── Verify OTP (Strict Real OTP Mode) ──────────────────────────────────────────
 const verifyOTP = async (req, res) => {
   try {
     const { email, phone, emailOtp, phoneOtp } = req.body;
 
-    // Check if matching OTP exists in database, or accept '123456' or any 6-digit input
+    // Require the exact real 6-digit OTP dispatched to the student's email
     const validEmailOtp = await OTP.findOne({ email, otp: emailOtp, type: 'email' });
-    const isFallbackOtp = emailOtp === '123456' || (emailOtp && emailOtp.length === 6);
     
-    if (!validEmailOtp && !isFallbackOtp) {
-      return res.status(400).json({ success: false, message: 'Invalid OTP. Please enter 6 digits.' });
+    if (!validEmailOtp) {
+      return res.status(400).json({ success: false, message: 'Invalid or expired OTP. Please enter the exact code sent to your email.' });
     }
 
     const user = await User.findOne({ email });
