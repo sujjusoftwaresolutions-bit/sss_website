@@ -29,11 +29,11 @@ const getCertificateById = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Certificate not found. Please check the Certificate ID or Roll Number and try again.' });
     }
 
-    // Require verified email and phone OTP
-    if (!req.user.emailVerified || !req.user.phoneVerified) {
+    // Require verified email
+    if (!req.user.emailVerified) {
       return res.status(403).json({
         success: false,
-        message: 'Access Denied: Please verify your email and phone number via OTP first.',
+        message: 'Access Denied: Please verify your email address via OTP first.',
       });
     }
 
@@ -48,20 +48,6 @@ const getCertificateById = async (req, res) => {
       }
     }
 
-    // Ownership check — admin can see all, user can see their own, linked, or public certs
-    if (
-      certificate.userId &&
-      certificate.userId.toString() !== req.user.id &&
-      req.user.role !== 'admin' &&
-      certificate.rollNumber?.toLowerCase() !== req.user.rollNumber?.toLowerCase() &&
-      certificate.studentEmail?.toLowerCase() !== req.user.email?.toLowerCase()
-    ) {
-      return res.status(403).json({
-        success: false,
-        message: 'Unauthorized. This certificate belongs to another registered account.',
-      });
-    }
-
     res.json({ success: true, ...certificate.toObject() });
   } catch (error) {
     console.error('Certificate lookup error:', error.message);
@@ -69,15 +55,34 @@ const getCertificateById = async (req, res) => {
   }
 };
 
-// @desc    Get all certificates belonging to logged-in user
+// @desc    Get all certificates belonging to logged-in user (smart match by userId, email, or rollNumber)
 // @route   GET /api/certificates/my-certificates
 // @access  Private
 const getUserCertificates = async (req, res) => {
   try {
-    const certificates = await Certificate.find({ userId: req.user.id });
+    const user = req.user;
+    const queryConditions = [{ userId: user.id }];
+
+    if (user.email) {
+      queryConditions.push({ studentEmail: { $regex: new RegExp(`^${user.email.trim()}$`, 'i') } });
+    }
+    if (user.rollNumber) {
+      queryConditions.push({ rollNumber: { $regex: new RegExp(`^${user.rollNumber.trim()}$`, 'i') } });
+    }
+
+    const certificates = await Certificate.find({ $or: queryConditions }).sort({ createdAt: -1 });
+
+    // Auto-link unassigned certificates to this user
+    for (const cert of certificates) {
+      if (!cert.userId) {
+        cert.userId = user.id;
+        await cert.save();
+      }
+    }
+
     res.json({ success: true, certificates });
   } catch (error) {
-    console.error(error);
+    console.error('GetUserCertificates error:', error);
     res.status(500).json({ success: false, message: 'Server error fetching certificates' });
   }
 };
@@ -140,7 +145,7 @@ const createCertificate = async (req, res) => {
   }
 };
 
-// @desc    Download certificate file from Cloudinary URL
+// @desc    Download certificate file (Owner from Dashboard only)
 // @route   GET /api/certificates/download/:id
 // @access  Private
 const downloadCertificate = async (req, res) => {
@@ -152,11 +157,26 @@ const downloadCertificate = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Certificate file not found.' });
     }
 
-    // Require verified email and phone OTP
-    if (!req.user.emailVerified || !req.user.phoneVerified) {
+    // Require verified email
+    if (!req.user.emailVerified) {
       return res.status(403).json({
         success: false,
-        message: 'Access Denied: Please verify your email and phone number via OTP first.',
+        message: 'Access Denied: Please verify your email address via OTP first.',
+      });
+    }
+
+    // Strict Ownership Check: Only admin or the certificate owner can download
+    const isOwner = (
+      req.user.role === 'admin' ||
+      (certificate.userId && certificate.userId.toString() === req.user.id) ||
+      (certificate.studentEmail && req.user.email && certificate.studentEmail.toLowerCase() === req.user.email.toLowerCase()) ||
+      (certificate.rollNumber && req.user.rollNumber && certificate.rollNumber.toLowerCase() === req.user.rollNumber.toLowerCase())
+    );
+
+    if (!isOwner) {
+      return res.status(403).json({
+        success: false,
+        message: 'Access Denied: You can only download certificates that belong to your account from your Dashboard.',
       });
     }
 

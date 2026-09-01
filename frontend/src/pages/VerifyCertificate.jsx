@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, ShieldCheck, AlertCircle, Loader2, Eye, Download, Printer, X, Award, CheckCircle2 } from 'lucide-react';
+import { Search, ShieldCheck, AlertCircle, Loader2, Eye, Download, Printer, X, Award, CheckCircle2, LayoutDashboard } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
@@ -18,12 +18,8 @@ const VerifyCertificate = () => {
   const navigate = useNavigate();
   const printRef = useRef(null);
 
-  // Redirect to login/signup if not authenticated
-  useEffect(() => {
-    if (!isAuthenticated) {
-      navigate('/login', { state: { from: { pathname: '/verify-certificate' } }, replace: true });
-    }
-  }, [isAuthenticated, navigate]);
+  // Optional redirect logic removed to allow public verification
+  // Users can search any Certificate ID and view details
 
   const handleVerify = async (e) => {
     e.preventDefault();
@@ -33,10 +29,7 @@ const VerifyCertificate = () => {
     setResult(null);
 
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.get(`${API_BASE}/certificates/${encodeURIComponent(certId.trim())}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const response = await axios.get(`/certificates/${encodeURIComponent(certId.trim())}`);
       setResult({ status: 'success', data: response.data });
     } catch (error) {
       setResult({
@@ -249,7 +242,7 @@ const VerifyCertificate = () => {
                       </div>
                     </div>
 
-                    {/* Action Buttons: View & Download */}
+                    {/* Action Buttons: View Certificate & Go to Dashboard */}
                     <div className="flex flex-wrap items-center justify-center gap-4 w-full">
                       <button
                         onClick={() => setShowModal(true)}
@@ -260,16 +253,18 @@ const VerifyCertificate = () => {
                       </button>
 
                       <button
-                        onClick={() => handleDownload(result.data.certificateId)}
-                        disabled={downloadLoading}
-                        className="flex items-center justify-center gap-2 py-3.5 px-8 rounded-xl font-bold text-brand-navy shadow-[0_4px_20px_rgba(212,175,55,0.4)] transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-70"
+                        onClick={() => {
+                          if (isAuthenticated) {
+                            navigate('/dashboard');
+                          } else {
+                            navigate('/login', { state: { from: { pathname: '/dashboard' } } });
+                          }
+                        }}
+                        className="flex items-center justify-center gap-2 py-3.5 px-8 rounded-xl font-bold text-brand-navy shadow-[0_4px_20px_rgba(212,175,55,0.4)] transition-all hover:scale-[1.02] active:scale-95"
                         style={{ background: 'linear-gradient(135deg, #F4C542 0%, #D4AF37 100%)' }}
                       >
-                        {downloadLoading ? (
-                          <><Loader2 className="w-5 h-5 animate-spin" /> Preparing...</>
-                        ) : (
-                          <><Download className="w-5 h-5" /> Download Certificate</>
-                        )}
+                        <LayoutDashboard className="w-5 h-5" />
+                        Go to Dashboard to Download
                       </button>
                     </div>
 

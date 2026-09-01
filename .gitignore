@@ -2,6 +2,8 @@
 .env
 node_modules/
 dist/
+dist.zip
+*.zip
 .DS_Store
 Thumbs.db
 *.log

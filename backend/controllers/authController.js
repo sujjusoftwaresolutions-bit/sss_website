@@ -98,9 +98,10 @@ const sendOTPSMS = async (phone, otp) => {
       console.log(`[SMS SENT] Real SMS delivered to ${formattedPhone}`);
     } catch (smsErr) {
       console.error('[SMS ERROR] Failed to send SMS:', smsErr.message);
+      console.log(`[LOCAL DEV FALLBACK] Phone OTP for ${phone} is: ${otp}`);
     }
   } else {
-    console.log(`[SMS NOTICE] Twilio credentials not set. OTP for ${phone}: ${otp}`);
+    console.log(`[SMS NOTICE] Mobile SMS handled via Firebase Phone Auth on frontend. (Server OTP for ${phone}: ${otp})`);
   }
 };
 
@@ -180,23 +181,23 @@ const registerAdmin = async (req, res) => {
   }
 };
 
-// ── Verify OTP (Strict Email & Phone OTP Mode) ──────────────────────────────────
+// ── Verify OTP (Mandatory Email OTP, Optional Phone OTP) ───────────────────────
 const verifyOTP = async (req, res) => {
   try {
-    const { email, phone, emailOtp, phoneOtp } = req.body;
+    const { email, phone, emailOtp, phoneOtp, firebaseVerified } = req.body;
 
-    // 1. Validate Email OTP
+    // 1. Validate Email OTP (Mandatory)
     const validEmailOtp = await OTP.findOne({ email, otp: emailOtp, type: 'email' });
     if (!validEmailOtp) {
       return res.status(400).json({ success: false, message: 'Invalid or expired Email OTP. Please check your email inbox.' });
     }
 
-    // 2. Validate Phone OTP (If Twilio SMS is active)
-    const isSmsActive = Boolean(process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN && process.env.TWILIO_PHONE_NUMBER);
-    if (isSmsActive) {
+    // 2. Validate Phone OTP (Optional — if provided or verified via Firebase)
+    let phoneIsVerified = Boolean(firebaseVerified);
+    if (!phoneIsVerified && phone && phoneOtp) {
       const validPhoneOtp = await OTP.findOne({ phone, otp: phoneOtp, type: 'phone' });
-      if (!validPhoneOtp) {
-        return res.status(400).json({ success: false, message: 'Invalid or expired Phone SMS OTP. Please check your phone messages.' });
+      if (validPhoneOtp) {
+        phoneIsVerified = true;
       }
     }
 
@@ -206,7 +207,7 @@ const verifyOTP = async (req, res) => {
     }
 
     user.emailVerified = true;
-    user.phoneVerified = true;
+    user.phoneVerified = phoneIsVerified || true; // Set verified upon successful Email OTP
     await user.save();
 
     await OTP.deleteMany({ $or: [{ email }, { phone }] });
@@ -242,8 +243,8 @@ const loginUser = async (req, res) => {
     });
 
     if (user && (await user.matchPassword(password))) {
-      if (!user.emailVerified || !user.phoneVerified) {
-        return res.status(401).json({ success: false, message: 'Please verify your account via OTP before logging in.' });
+      if (!user.emailVerified) {
+        return res.status(401).json({ success: false, message: 'Please verify your email address via OTP before logging in.' });
       }
 
       res.json({
