@@ -244,23 +244,6 @@ const OTPVerification = () => {
           </div>
         )}
 
-        {firebaseErrorMsg && !success && (
-          <div className="bg-amber-500/10 border border-amber-500/50 text-amber-300 p-3 rounded-xl mb-6 text-xs flex flex-col gap-2">
-            <div className="flex items-center gap-2 font-semibold">
-              <AlertCircle className="w-4 h-4 text-amber-400 shrink-0" />
-              <span>Firebase SMS Status:</span>
-            </div>
-            <p className="pl-6">{firebaseErrorMsg}</p>
-            <button 
-              type="button"
-              onClick={() => sendFirebaseSMS(phone)}
-              className="mt-1 self-start ml-6 text-xs text-brand-gold underline hover:text-white flex items-center gap-1"
-            >
-              <Send className="w-3 h-3" /> Retry Sending Firebase SMS
-            </button>
-          </div>
-        )}
-
         <form onSubmit={handleSubmit} className="space-y-5">
           {/* Email OTP (Required) */}
           <div className="space-y-2">
@@ -285,20 +268,10 @@ const OTPVerification = () => {
 
           {/* Phone OTP (Optional) */}
           <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <label className="text-sm font-medium text-gray-300 flex items-center gap-2">
-                <Phone className="w-4 h-4 text-brand-gold" />
-                Phone OTP <span className="text-xs text-gray-400 font-normal">(Optional)</span>
-              </label>
-              {firebaseStatus === 'sending' && (
-                <span className="text-xs text-amber-400 flex items-center gap-1">
-                  <RefreshCw className="w-3 h-3 animate-spin" /> Sending SMS...
-                </span>
-              )}
-              {firebaseStatus === 'sent' && (
-                <span className="text-xs text-green-400 font-medium">✓ SMS Sent</span>
-              )}
-            </div>
+            <label className="text-sm font-medium text-gray-300 flex items-center gap-2">
+              <Phone className="w-4 h-4 text-brand-gold" />
+              Phone OTP <span className="text-xs text-gray-400 font-normal">(Optional)</span>
+            </label>
             <div className="relative">
               <input
                 type="text"
