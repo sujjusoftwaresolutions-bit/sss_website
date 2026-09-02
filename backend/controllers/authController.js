@@ -233,18 +233,26 @@ const verifyOTP = async (req, res) => {
   }
 };
 
-// ── Login User ─────────────────────────────────────────────────────────────────
+// ── Login User (Direct Email/Phone & Password Login) ───────────────────────────
 const loginUser = async (req, res) => {
   try {
     const { loginId, password } = req.body;
 
+    if (!loginId || !password) {
+      return res.status(400).json({ success: false, message: 'Please provide email/phone and password.' });
+    }
+
+    const cleanLoginId = loginId.trim().toLowerCase();
     const user = await User.findOne({
-      $or: [{ email: loginId.toLowerCase() }, { phone: loginId }]
+      $or: [{ email: cleanLoginId }, { phone: loginId.trim() }]
     });
 
     if (user && (await user.matchPassword(password))) {
-      if (!user.emailVerified) {
-        return res.status(401).json({ success: false, message: 'Please verify your email address via OTP before logging in.' });
+      // Auto-mark verified upon successful password authentication
+      if (!user.emailVerified || !user.phoneVerified) {
+        user.emailVerified = true;
+        user.phoneVerified = true;
+        await user.save();
       }
 
       res.json({
