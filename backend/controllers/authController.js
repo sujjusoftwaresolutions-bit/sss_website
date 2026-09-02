@@ -14,8 +14,8 @@ const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString()
 
 // ── Nodemailer transporter (Production SMTP / Gmail) ──────────────────────────
 const createTransporter = () => {
-  const user = process.env.SMTP_EMAIL || process.env.EMAIL_USER;
-  const rawPass = process.env.SMTP_PASSWORD || process.env.EMAIL_PASS || '';
+  const user = process.env.SMTP_EMAIL || process.env.EMAIL_USER || 'sujjusoftwaresolutions@gmail.com';
+  const rawPass = process.env.SMTP_PASSWORD || process.env.EMAIL_PASS || 'qfcy rrfl cygg lxxm';
   const pass = rawPass.replace(/\s+/g, ''); // Clean 16-character App Password (removes any spaces)
   const host = process.env.SMTP_HOST || 'smtp.gmail.com';
   const port = process.env.SMTP_PORT ? parseInt(process.env.SMTP_PORT) : 587;
