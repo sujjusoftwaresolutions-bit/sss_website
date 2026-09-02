@@ -12,11 +12,21 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem('token') || null);
   const [loading, setLoading] = useState(true);
 
-  // Configure axios defaults - use local backend on localhost, Render in production
-  axios.defaults.baseURL = import.meta.env.VITE_API_URL || 
-    (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
-      ? 'http://localhost:5000/api' 
-      : 'https://sss-website.onrender.com/api');
+  // Configure axios defaults - use local backend on localhost, live domain /api on hosting, or VITE_API_URL
+  const getBaseUrl = () => {
+    if (import.meta.env.VITE_API_URL) return import.meta.env.VITE_API_URL;
+    const hostname = window.location.hostname;
+    if (hostname === 'localhost' || hostname === '127.0.0.1') {
+      return 'http://localhost:5000/api';
+    }
+    // On live domain (e.g. Namecheap), point to same domain /api or fallback
+    if (hostname.includes('onrender.com')) {
+      return 'https://sss-website.onrender.com/api';
+    }
+    return `${window.location.protocol}//${window.location.host}/api`;
+  };
+
+  axios.defaults.baseURL = getBaseUrl();
 
   useEffect(() => {
     if (token) {
