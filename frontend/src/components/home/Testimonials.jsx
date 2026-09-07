@@ -45,14 +45,33 @@ const WORKSHOP_FEEDBACK = [
   },
   {
     id: 6,
-    name: 'Student Video Feedback',
+    name: 'Student Video Feedback 1',
     role: 'ALIET IoT Workshop Participant',
-    tag: '📹 Video Review (0:42)',
+    tag: '📹 Video Review 1',
     content: 'Watch student video feedback on our hands-on IoT & full-stack learning experience.',
     rating: 5,
     isVideo: true,
-    // 💡 NOTE: Replace '/video1.mp4' below with your actual 0.42 sec review video file URL or path in /public
     videoUrl: '/video5.mp4',
+  },
+  {
+    id: 7,
+    name: 'Student Video Feedback 2',
+    role: 'Practical Project Workshop Participant',
+    tag: '📹 Video Review 2',
+    content: 'Watch participant feedback on circuit building and practical lab sessions.',
+    rating: 5,
+    isVideo: true,
+    videoUrl: '/video6.mp4',
+  },
+  {
+    id: 8,
+    name: 'Student Video Feedback 3',
+    role: 'Technical Training & Mentorship',
+    tag: '📹 Video Review 3',
+    content: 'Watch student video testimonial on real-world engineering projects and guidance.',
+    rating: 5,
+    isVideo: true,
+    videoUrl: '/video7.mp4',
   },
 ];
 
