@@ -1,11 +1,15 @@
 import React from 'react';
 
 const HIGHLIGHTS = [
-  { id: 1, title: 'AI Automation', subtitle: 'Enterprise Solutions', image: '/sss1.jpeg' },
-  { id: 2, title: 'Smart Cities', subtitle: 'CivicSense AI', image: '/sss2.jpeg' },
-  { id: 3, title: 'Academic Training', subtitle: 'Workshops & Certs', image: '/sss3.jpeg' },
-  { id: 4, title: 'Web Development', subtitle: 'Modern Web Apps', image: '/sss4.jpeg' },
-  { id: 5, title: 'Data Analytics', subtitle: 'Actionable Insights', image: '/slide5.jpeg' },
+  { id: 1, title: 'ALIET 6-Day Workshop', subtitle: 'Aug 3rd - 8th, 2026', image: '/workshops/aliet_1.jpg' },
+  { id: 2, title: 'Certificate Award Ceremony', subtitle: 'ALIET Vijayawada', image: '/workshops/aliet_2.jpg' },
+  { id: 3, title: 'Hardware Prototype Showcase', subtitle: 'IoT & Embedded Systems', image: '/workshops/aliet_3.jpg' },
+  { id: 4, title: 'Hands-on Technical Lab', subtitle: 'Practical Engineering', image: '/workshops/aliet_4.jpg' },
+  { id: 5, title: 'Faculty Project Inspection', subtitle: 'Live Student Defense', image: '/workshops/aliet_9.jpg' },
+  { id: 6, title: 'Medal & Certificate Honors', subtitle: 'Valedictory Award', image: '/workshops/aliet_13.jpg' },
+  { id: 7, title: 'Team Hardware Prototype', subtitle: 'Circuit Assembly', image: '/workshops/aliet_17.jpg' },
+  { id: 8, title: 'AI & Automation', subtitle: 'Enterprise Solutions', image: '/sss1.jpeg' },
+  { id: 9, title: 'Smart Cities', subtitle: 'CivicSense AI', image: '/sss2.jpeg' },
 ];
 
 const InfiniteCarousel = () => {

@@ -3,7 +3,7 @@ import { motion, useInView, animate } from 'framer-motion';
 
 const Counter = ({ from = 0, to, duration = 2, suffix = '' }) => {
   const nodeRef = useRef(null);
-  const inView = useInView(nodeRef, { once: true, margin: "-100px" });
+  const inView = useInView(nodeRef, { once: true, margin: "0px" });
   const [hasAnimated, setHasAnimated] = useState(false);
 
   useEffect(() => {
@@ -22,14 +22,14 @@ const Counter = ({ from = 0, to, duration = 2, suffix = '' }) => {
     }
   }, [from, to, inView, duration, suffix, hasAnimated]);
 
-  return <span ref={nodeRef} className="tabular-nums">{from}{suffix}</span>;
+  return <span ref={nodeRef} className="tabular-nums">{to}{suffix}</span>;
 };
 
 const stats = [
-  { value: 500, suffix: '+', label: 'Students Trained' },
-  { value: 20, suffix: '+', label: 'College Events' },
-  { value: 100, suffix: '+', label: 'Projects' }, 
-  { value: 5, suffix: '+', label: 'Years Experience' },
+  { value: 100, suffix: '+', label: 'Students Trained' },
+  { value: 1, suffix: '+', label: 'College Events' },
+  { value: 10, suffix: '+', label: 'Projects' }, 
+  { value: 1, suffix: '+', label: 'Years Experience' },
 ];
 
 const StatisticsSection = () => {

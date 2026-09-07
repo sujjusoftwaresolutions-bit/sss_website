@@ -10,6 +10,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 const Home = lazy(() => import('./pages/Home'));
 const About = lazy(() => import('./pages/About'));
 const Services = lazy(() => import('./pages/Services'));
+const Workshops = lazy(() => import('./pages/Workshops'));
 const CivicSenseAI = lazy(() => import('./pages/CivicSenseAI'));
 const Contact = lazy(() => import('./pages/Contact'));
 const Internships = lazy(() => import('./pages/Internships'));
@@ -33,6 +34,7 @@ function AnimatedRoutes() {
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/services" element={<Services />} />
+        <Route path="/workshops" element={<Workshops />} />
         <Route path="/civicsense-ai" element={<CivicSenseAI />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/internships" element={<Internships />} />

@@ -61,6 +61,7 @@ const Footer = () => {
             <h3 className="text-lg font-bold text-white mb-6 font-outfit">Quick Links</h3>
             <ul className="space-y-3 font-inter text-sm">
               <li><Link to="/about" className="hover:text-brand-gold transition-colors">About Us</Link></li>
+              <li><Link to="/workshops" className="hover:text-brand-gold transition-colors">Workshops & Training</Link></li>
               <li><Link to="/civicsense-ai" className="hover:text-brand-gold transition-colors">CivicSense AI</Link></li>
               <li><Link to="/services" className="hover:text-brand-gold transition-colors">Our Services</Link></li>
               <li><Link to="/contact" className="hover:text-brand-gold transition-colors">Contact</Link></li>

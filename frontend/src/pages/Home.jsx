@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import HeroSection from '../components/home/HeroSection';
 import WhyChooseUs from '../components/home/WhyChooseUs';
-import StatisticsSection from '../components/home/StatisticsSection';
 import ExpertiseSection from '../components/home/ExpertiseSection';
 import CivicSensePreview from '../components/home/CivicSensePreview';
 import Testimonials from '../components/home/Testimonials';
@@ -9,6 +8,7 @@ import CTASection from '../components/home/CTASection';
 import BootUpIntro from '../components/home/BootUpIntro';
 import InfiniteCarousel from '../components/common/InfiniteCarousel';
 import FAQAccordion from '../components/common/FAQAccordion';
+import WorkshopsSection from '../components/home/WorkshopsSection';
 
 const Home = () => {
   const [introDone, setIntroDone] = useState(false);
@@ -29,8 +29,9 @@ const Home = () => {
         <InfiniteCarousel />
       </div>
 
+      <WorkshopsSection />
+
       <WhyChooseUs />
-      <StatisticsSection />
       <ExpertiseSection />
       <CivicSensePreview />
       <Testimonials />
