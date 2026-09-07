@@ -146,8 +146,11 @@ const Testimonials = () => {
                     <video
                       src={item.videoUrl}
                       controls
+                      autoPlay
+                      loop
+                      muted
                       playsInline
-                      preload="metadata"
+                      preload="auto"
                       className="w-full aspect-video object-cover rounded-2xl"
                     />
                   </div>
