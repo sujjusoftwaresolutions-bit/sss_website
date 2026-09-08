@@ -62,6 +62,7 @@ const WORKSHOP_FEEDBACK = [
     rating: 5,
     isVideo: true,
     videoUrl: '/video6.mp4',
+    objectPosition: 'center 22%',
   },
   {
     id: 8,
@@ -152,6 +153,7 @@ const Testimonials = () => {
                       playsInline
                       preload="auto"
                       className="w-full aspect-video object-cover rounded-2xl"
+                      style={item.objectPosition ? { objectPosition: item.objectPosition } : undefined}
                     />
                   </div>
                 )}
